@@ -60,16 +60,17 @@ the station closes and you are marked on what you managed.
 
 ### Two difficulty levels
 
-| | **Hard** — the exam | **Easy** — practice |
+| | **Easy** — practice (default) | **Hard** — the exam |
 |---|---|---|
-| Going back a step | not possible | allowed from triage through drug selection, **−1 min each time** |
-| Strength and label dose | shown | shown |
-| **Label contraindications and cautions** | **withheld** | shown |
+| Going back a step | allowed from triage through drug selection, **−1 min each time** | not possible |
+| Strength in mg/mL | shown | shown |
+| **The label's dose** | shown | **withheld** |
+| **Label contraindications** | shown | **withheld** |
+| **Decoy findings** | none | present |
 
-Hard is the default and is what standing at the real cabinet feels like: the bottle tells you it is
-100 mg/mL, and whether it must not go into a milking cow is something you are expected to already
-know. Easy turns the label over for you. Either way the red flags still score — giving a dry-cow
-tube to a milking cow costs the same in both.
+The bottle in your hand always says 100 mg/mL, so hard mode still shows you that. What nobody hands
+you in an exam is the dose, or a warning that this one must not go near a milking cow. Red flags
+score identically in both: easy makes the label readable, not the mistake free.
 
 ### The six stages
 
@@ -101,6 +102,26 @@ Sixty points sit on the four decisions that actually determine whether the anima
 - **On hard it will not warn you off a drug.** The strength and the label dose are there; that ivermectin must never touch a milking cow is not. You find out when you are marked.
 - **Red flags are scored.** Giving a dry-cow intramammary tube to a milking cow, or a prostaglandin to a pregnant animal, is caught and penalised.
 - **The milk-withdrawal question can be a trap.** If the owner already treated the animal before you arrived, the governing withdrawal may be that earlier drug, not the one you just gave — but you only learn about it if you asked.
+
+### How complete the picture is
+
+Real cows have not read the textbook. Every round also rolls how completely the disease presents,
+and the debrief tells you afterwards which one you got:
+
+| | |
+|---|---|
+| **100%** | The classic picture. Every sign the textbook lists. |
+| **90%** | One or two supporting signs are missing. The pathognomonic sign is still there. |
+| **80%** | **The pathognomonic sign is gone too.** You have to reason from the whole picture and the farm context. |
+
+At 80% the babesiosis cow has no cola-coloured urine, the hardware-disease cow has a *negative*
+withers pinch, and the photosensitised cow is too dark-coated to show the white-hair boundary. Each
+one still has a route to the answer — the case files were written so that route survives — but it
+runs through epidemiology and cow-side tests rather than a single give-away sign.
+
+On hard, decoys are added on top: findings that are genuinely true of this animal but point at a
+different disease. One at 100%, two at 90%, three at 80%. The debrief names each one and what
+refutes it.
 
 ### Randomised every round
 
