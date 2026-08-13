@@ -75,7 +75,7 @@ score identically in both: easy makes the label readable, not the mistake free.
 ### The six stages
 
 1. **Take the call** — choose from 23 history questions
-2. **Triage and instruct the owner** — decide urgency, then pick what to have ready before you arrive; wrong instructions cost marks
+2. **Triage and instruct the owner** — decide urgency, then pick from **six instructions of which exactly three are right for this animal**; the other three are drawn from things that are actively harmful and things that belong to a different disease
 3. **Examine** — 25 examinations and 6 cow-side tests to choose from
 4. **Diagnose** — 23 diseases on the list, including decoys with no case behind them
 5. **Treat** — the whole 38-item cabinet appears in random order with no filtering. Pick up to three drugs, then enter the dose in mg/kg, **calculate the volume in mL yourself**, and choose the route — for every drug you selected

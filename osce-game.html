@@ -974,7 +974,8 @@ kbd{ font-family:var(--g-mono); font-size:var(--ds-fs-xs); background:var(--ds-c
 const RN={i:(a,b)=>a+Math.floor(Math.random()*(b-a+1)),
  f:(a,b,d)=>{const p=Math.pow(10,d||1);return Math.round((a+Math.random()*(b-a))*p)/p},
  p:a=>a[Math.floor(Math.random()*a.length)],
- c:pr=>Math.random()<pr};
+ c:pr=>Math.random()<pr,
+ s:(a,k)=>a.slice().sort(()=>Math.random()-.5).slice(0,k)};
 const $=id=>document.getElementById(id);
 const el=(t,c,h)=>{const e=document.createElement(t);if(c)e.className=c;if(h!=null)e.innerHTML=h;return e};
 
@@ -1149,19 +1150,19 @@ const PREP=[
  // ── สั่งได้เสมอ ถูกเมื่อเคสนั้นต้องการ ──
  ["c1","มีน้ำสะอาดให้กินได้ตลอดเวลา",0],
  ["c2","แยกสัตว์ป่วยออกจากฝูง แยกรางน้ำรางอาหาร",0],
- ["c3","จัดท่านอนให้ถูก — พลิกตัวสลับข้างทุก 2–4 ชม. รองฟางหนา และให้นอนหมอบอกจรดพื้น",0],
- ["c4","ห้ามผ่าซาก ห้ามชำแหละ ห้ามเคลื่อนย้ายซาก",0],
+ ["c3","จัดท่านอนให้ถูก — พลิกตัวสลับข้างทุก 2–4 ชม. รองฟางหนา และให้นอนหมอบอกจรดพื้น",0,"d"],
+ ["c4","ห้ามผ่าซาก ห้ามชำแหละ ห้ามเคลื่อนย้ายซาก",0,"d"],
  ["c5","ใครเข้าใกล้ต้องใส่ถุงมือและล้างมือทันที คนงานที่มีไข้หรือมีแผลให้ไปพบแพทย์",0],
- ["c6","หยุดเคลื่อนย้ายสัตว์เข้าออกฟาร์ม และห้ามคนนอกกับรถจากฟาร์มอื่นเข้าคอก",0],
- ["c7","ล้างเท้าด้วยน้ำสะอาด แล้วย้ายไปยืนพื้นแห้งแข็ง",0],
- ["c8","รีดน้ำนมเต้าที่อักเสบทิ้งให้เกลี้ยงทุก 2–4 ชั่วโมง",0],
+ ["c6","หยุดเคลื่อนย้ายสัตว์เข้าออกฟาร์ม และห้ามคนนอกกับรถจากฟาร์มอื่นเข้าคอก",0,"d"],
+ ["c7","ล้างเท้าด้วยน้ำสะอาด แล้วย้ายไปยืนพื้นแห้งแข็ง",0,"d"],
+ ["c8","รีดน้ำนมเต้าที่อักเสบทิ้งให้เกลี้ยงทุก 2–4 ชั่วโมง",0,"d"],
  ["c9","เปลี่ยนวัสดุรองนอนให้แห้งและสะอาด",0],
  ["c10","กำจัดเห็บและกันแมลงดูดเลือดให้ตัวป่วย",0],
  ["c11","ห้ามใช้เข็มฉีดยาหรือมีดตัดเขาร่วมกันระหว่างตัว",0],
  ["c12","อย่าไล่ อย่าต้อนให้วิ่ง ให้อยู่นิ่งที่สุด",0],
- ["c13","หยุดอาหารข้นและอาหารล็อตที่สงสัยทันที เก็บตัวอย่างแยกไว้",0],
+ ["c13","หยุดอาหารข้นและอาหารล็อตที่สงสัยทันที เก็บตัวอย่างแยกไว้",0,"d"],
  ["c14","พาเข้าที่ร่มมีหลังคา ไม่ให้ตากแดดตากฝน",0],
- ["c15","กักไม่ให้ลงแปลงหญ้าเดิมไปก่อน",0],
+ ["c15","กักไม่ให้ลงแปลงหญ้าเดิมไปก่อน",0,"d"],
  ["c16","เปิดคอกให้อากาศถ่ายเท ลดความชื้นและกันฝนสาด",0],
  ["c17","ล่อให้กินด้วยหญ้าสดหรืออาหารที่ชอบ อย่าปล่อยให้อดต่อ",0],
  // ── สั่งแล้วหักข้อละ 2 ──
@@ -2228,6 +2229,15 @@ function roll(){
     E:Object.assign({},C.e,sv.e||{},(pv&&pv.e)||{},decE),
     Q:Object.assign({},(pv&&pv.q)||{},decQ)
   };
+  // คำสั่งเจ้าของของรอบนี้ · หยิบมาแสดงแค่ 6 ข้อ ถูก 3 ผิด 3
+  const fitsP=p=>!p[3]||(p[3]==="lact"&&V.lact==="milking")||(p[3]==="prior"&&!!V.prior);
+  const wantAll=[...new Set(PREP.filter(p=>p[2]===1&&fitsP(p)).map(p=>p[0]).concat(C.prep||[]))];
+  const traps=PREP.filter(p=>p[2]===-1).map(p=>p[0]);
+  // ตัวลวงต้องเป็นข้อที่ผิดชัดเจนเมื่อเคสนี้ไม่ต้องการ ไม่ใช่ข้อที่สั่งไปก็ไม่เสียหาย
+  const others=PREP.filter(p=>p[2]===0&&p[3]==="d"&&!wantAll.includes(p[0])).map(p=>p[0]);
+  const nT=RN.i(1,2);   // ผสมกับดักกับข้อที่ผิดชัดเจน จะได้ไม่จำกับดักได้ในไม่กี่รอบ
+  V.prepWant=RN.s(wantAll,3);
+  V.prepOpts=RN.s(V.prepWant.concat(RN.s(traps,nT),RN.s(others,3-nT)),6);
   V.doseAt=new Date(2026,RN.i(5,8),RN.i(1,27),RN.i(8,16),RN.p([0,30]),0);
   V.priorAt=prior?new Date(V.doseAt.getTime()-prior.days*86400000):null;
 }
@@ -2326,7 +2336,7 @@ function buildTriage(){
 }
 function buildPrep(){
   const h=$("prepBox");h.innerHTML="";
-  PREP.slice().sort(()=>Math.random()-.5).forEach(([k,t])=>{
+  V.prepOpts.map(k=>PREP.find(p=>p[0]===k)).forEach(([k,t])=>{
     const b=el("button","ch",`<span class="k" aria-hidden="true">□</span><span>${t}</span>`);
     b.type="button";b.setAttribute("aria-pressed","false");
     b.onclick=()=>{const on=b.getAttribute("aria-pressed")==="true";
@@ -2517,13 +2527,14 @@ function grade(){
   R.push(["TRIAGE",pickTriage===V.sev.triage?12:0,12,
     pickTriage===V.sev.triage?"ถูกต้อง":`คุณเลือก "${(TRIAGE.find(t=>t[0]===pickTriage)||[,"—"])[1]}" · รอบนี้ที่ถูกคือ "${TRIAGE.find(t=>t[0]===V.sev.triage)[1]}"`]);
   // ข้อที่ผูกกับการรีดนม ไม่นับกับโคสาวและโคพักรีด
-  const fits=p=>!p[3]||(p[3]==="lact"&&V.lact==="milking")||(p[3]==="prior"&&!!V.prior);
-  const univ=PREP.filter(p=>p[2]===1&&fits(p)).map(p=>p[0]);
-  const want=[...new Set(univ.concat(C.prep||[]))];
-  const bad=[...pickPrep].filter(k=>(PREP.find(p=>p[0]===k)||[])[2]===-1);
+  const want=V.prepWant;
   const good=want.filter(k=>pickPrep.has(k));
-  R.push(["คำสั่งเจ้าของ",Math.max(0,Math.round(pct(good.length,want.length)*12)-bad.length*2),12,
-    `สั่งถูก ${good.length}/${want.length}`+(bad.length?` · <b>สั่งผิด ${bad.length} ข้อ (−${bad.length*2})</b>`:"")]);
+  const bad=V.prepOpts.filter(k=>!want.includes(k)&&pickPrep.has(k));
+  // ถูกข้อละ 4 · กับดักอันตราย −4 · ข้อที่ไม่เกี่ยวแต่ไม่อันตราย −2
+  const badT=bad.filter(k=>(PREP.find(p=>p[0]===k)||[])[2]===-1);
+  const pen2=badT.length*4+(bad.length-badT.length)*2;
+  R.push(["คำสั่งเจ้าของ",Math.max(0,good.length*4-pen2),12,
+    `สั่งถูก ${good.length}/3`+(bad.length?` · <b>สั่งผิด ${bad.length} ข้อ (−${pen2})</b>`:"")]);
   const keHit=KE.filter(x=>examined.has(x));
   R.push(["ตรวจร่างกาย",Math.round(pct(keHit.length,KE.length)*9),9,
     `เจอสิ่งตรวจพบสำคัญ ${keHit.length}/${KE.length} · ตรวจทั้งหมด ${examined.size}`]);
@@ -2658,27 +2669,16 @@ function grade(){
   }
   h+=`<div class="ds-card tsec" style="margin-top:16px">
     <div class="ds-chead"><h3 class="ds-ctitle">คำสั่งเจ้าของก่อนไปถึงฟาร์ม</h3></div>
-    <p>รอบนี้ต้องสั่ง <b>${want.length}</b> ข้อ — คุณสั่งได้ <b>${good.length}</b> ข้อ</p><ul>`;
-  want.forEach(k=>{const P=PREP.find(x=>x[0]===k),u=P&&P[2]===1;
-    h+=`<li class="${pickPrep.has(k)?"hit":"miss"}">${P?P[1]:k} <span class="ds-badge ${
-      u?"ds-na":"ds-warn"}">${u?"ต้องสั่งทุกเคส":"เฉพาะเคสนี้"}</span></li>`});
-  h+=`</ul>`;
-  const naPicked=[...pickPrep].filter(k=>{const p=PREP.find(x=>x[0]===k);return p&&p[2]===1&&!fits(p)});
-  const naWhy=V.lact==="dry"?"แม่วัวตัวนี้พักรีดอยู่":V.lact==="heifer"?"ตัวนี้เป็นโคสาวที่ยังไม่เคยรีดนม":"รอบนี้เจ้าของยังไม่ได้ให้ยาอะไรไปก่อน";
-  if(naPicked.length){
-    h+=`<p style="margin-top:14px">ข้อที่สั่งไปแต่<b>ไม่เกี่ยวกับสัตว์ตัวนี้</b> — ไม่หักคะแนน แต่บอกไปก็ไม่ได้อะไร เพราะ${
-      naWhy}</p><ul>`;
-    naPicked.forEach(k=>{const p=PREP.find(x=>x[0]===k);h+=`<li class="miss">${p[1]}</li>`});
-    h+=`</ul>`;
-  }
-  if(bad.length){
-    h+=`<p style="margin-top:14px"><b>ข้อที่สั่งไปแล้วโดนหัก</b> — ข้อละ 2 คะแนน</p><ul>`;
-    bad.forEach(k=>{const P=PREP.find(x=>x[0]===k);h+=`<li class="wrong">${P?P[1]:k}</li>`});
-    h+=`</ul>`;
-  }else{
-    h+=`<p style="margin-top:14px">ไม่ได้สั่งข้อที่เป็นกับดักเลย — ดีแล้ว คำสั่งที่ผิดอันตรายกว่าคำสั่งที่ขาด เพราะเจ้าของลงมือทำจริงก่อนหมอไปถึง</p>`;
-  }
-  h+=`</div>`;
+    <p>รอบนี้มีให้เลือก 6 ข้อ — <b>ถูก 3 ผิด 3</b> · คุณสั่งถูก <b>${good.length}</b> ข้อ${
+      bad.length?` และสั่งผิด <b>${bad.length}</b> ข้อ`:""}</p><ul>`;
+  V.prepOpts.forEach(k=>{
+    const p=PREP.find(x=>x[0]===k), ok=want.includes(k), got=pickPrep.has(k);
+    const tag=ok?`<span class="ds-badge ds-ok">ควรสั่ง</span>`
+      :p[2]===-1?`<span class="ds-badge ds-bad">อันตราย −4</span>`
+      :`<span class="ds-badge ds-na">ไม่เกี่ยวกับเคสนี้ −2</span>`;
+    h+=`<li class="${ok?(got?"hit":"miss"):(got?"wrong":"miss")}">${p[1]} ${tag}</li>`;
+  });
+  h+=`</ul><p class="ds-mutedtext" style="margin-top:10px">คลังคำสั่งมี ${PREP.length} ข้อ แต่หยิบมาให้เลือกรอบละ 6 ข้อเท่านั้น — เคสเดิมรอบหน้าจะได้ชุดใหม่</p></div>`;
   h+=`<div class="ds-card tsec" style="margin-top:16px">
     <div class="ds-chead"><h3 class="ds-ctitle">สิ่งตรวจพบที่ตัดสินโรค</h3></div><ul>`;
   V.ke.forEach(k=>{const e=ES.find(x=>x[0]===k);
