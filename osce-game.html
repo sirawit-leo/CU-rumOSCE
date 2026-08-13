@@ -660,6 +660,8 @@ h1,h2,h3{ margin:0; }
 .hit::marker{ content:"✓ "; color:var(--ds-good); }
 .miss{ color:var(--ds-muted); }
 .miss::marker{ content:"✗ "; color:var(--ds-muted); }
+.wrong{ color:var(--ds-critical); }
+.wrong::marker{ content:"✗ "; color:var(--ds-critical); }
 .hist{ font-family:var(--g-mono); font-size:var(--ds-fs-sm); color:var(--ds-muted); margin-top:10px; }
 
 /* ---------------------------------------------------------------- peek */
@@ -2417,7 +2419,7 @@ function grade(){
   R.push(["TRIAGE",pickTriage===V.sev.triage?12:0,12,
     pickTriage===V.sev.triage?"ถูกต้อง":`คุณเลือก "${(TRIAGE.find(t=>t[0]===pickTriage)||[,"—"])[1]}" · รอบนี้ที่ถูกคือ "${TRIAGE.find(t=>t[0]===V.sev.triage)[1]}"`]);
   const univ=PREP.filter(p=>p[2]===1).map(p=>p[0]);
-  const want=univ.concat(C.prep||[]);
+  const want=[...new Set(univ.concat(C.prep||[]))];
   const bad=[...pickPrep].filter(k=>(PREP.find(p=>p[0]===k)||[])[2]===-1);
   const good=want.filter(k=>pickPrep.has(k));
   R.push(["คำสั่งเจ้าของ",Math.max(0,Math.round(pct(good.length,want.length)*12)-bad.length*2),12,
@@ -2526,7 +2528,23 @@ function grade(){
   h+=`<div class="ds-card tsec" style="margin-top:16px">
     <div class="ds-chead"><h3 class="ds-ctitle">คำถามชี้โรค</h3></div><ul>`;
   C.kq.forEach(k=>{const q=QS.find(x=>x[0]===k);h+=`<li class="${asked.has(k)?"hit":"miss"}">${q?q[1]:k}</li>`});
-  h+=`</ul></div><div class="ds-card tsec" style="margin-top:16px">
+  h+=`</ul></div>`;
+  h+=`<div class="ds-card tsec" style="margin-top:16px">
+    <div class="ds-chead"><h3 class="ds-ctitle">คำสั่งเจ้าของก่อนไปถึงฟาร์ม</h3></div>
+    <p>รอบนี้ต้องสั่ง <b>${want.length}</b> ข้อ — คุณสั่งได้ <b>${good.length}</b> ข้อ</p><ul>`;
+  want.forEach(k=>{const P=PREP.find(x=>x[0]===k),u=P&&P[2]===1;
+    h+=`<li class="${pickPrep.has(k)?"hit":"miss"}">${P?P[1]:k} <span class="ds-badge ${
+      u?"ds-na":"ds-warn"}">${u?"ต้องสั่งทุกเคส":"เฉพาะเคสนี้"}</span></li>`});
+  h+=`</ul>`;
+  if(bad.length){
+    h+=`<p style="margin-top:14px"><b>ข้อที่สั่งไปแล้วโดนหัก</b> — ข้อละ 2 คะแนน</p><ul>`;
+    bad.forEach(k=>{const P=PREP.find(x=>x[0]===k);h+=`<li class="wrong">${P?P[1]:k}</li>`});
+    h+=`</ul>`;
+  }else{
+    h+=`<p style="margin-top:14px">ไม่ได้สั่งข้อที่เป็นกับดักเลย — ดีแล้ว คำสั่งที่ผิดอันตรายกว่าคำสั่งที่ขาด เพราะเจ้าของลงมือทำจริงก่อนหมอไปถึง</p>`;
+  }
+  h+=`</div>`;
+  h+=`<div class="ds-card tsec" style="margin-top:16px">
     <div class="ds-chead"><h3 class="ds-ctitle">สิ่งตรวจพบที่ตัดสินโรค</h3></div><ul>`;
   C.ke.forEach(k=>{const e=ES.find(x=>x[0]===k);
     h+=`<li class="${examined.has(k)?"hit":"miss"}">${e?e[1]:k} — <i>${fill(V.E[k]||EDEF[k])}</i></li>`});
@@ -2536,11 +2554,6 @@ function grade(){
     C.kt.forEach(k=>{const t=TS.find(x=>x[0]===k);
       h+=`<li class="${tested.has(k)?"hit":"miss"}">${t?t[1]:k} — <i>${C.t[k]}</i></li>`});
     h+="</ul></div>"}
-  h+=`<div class="ds-card tsec" style="margin-top:16px">
-    <div class="ds-chead"><h3 class="ds-ctitle">อ่านต่อ</h3></div><ul>
-    <li>ไฟล์เคสเต็ม: <b>cases/</b></li>
-    <li>ยาและระยะหยุดยา: <b>OSCE-01-Drug-Formulary.md</b></li>
-    <li>โครง 20 นาที: <b>OSCE-02-Master-Flow.md</b></li></ul></div>`;
   $("debrief").innerHTML=h;show(7);
 }
 
