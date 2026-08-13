@@ -114,14 +114,15 @@ and the debrief tells you afterwards which one you got:
 
 | | |
 |---|---|
-| **100%** | The classic picture. Every sign the textbook lists. |
+| **100%** | The classic picture. Every sign the textbook lists, and an owner who answers in one line. |
 | **90%** | One or two supporting signs are missing. The pathognomonic sign is still there. |
-| **80%** | **The pathognomonic sign is gone too.** You have to reason from the whole picture and the farm context. |
+| **80%** | Same missing signs — **and the owner will not stop talking.** |
 
-At 80% the babesiosis cow has no cola-coloured urine, the hardware-disease cow has a *negative*
-withers pinch, and the photosensitised cow is too dark-coated to show the white-hair boundary. Each
-one still has a route to the answer — the case files were written so that route survives — but it
-runs through epidemiology and cow-side tests rather than a single give-away sign.
+At 80% every answer arrives wrapped in something else: what he was doing when he noticed, what his
+wife said, the price of milk, whether you know the road is full of potholes. Nothing he adds is
+clinical and nothing he adds is false; the answer you asked for is in there, whole, every time. It
+just takes about half as long again to read, and the clock is real time. The skill is reading past a
+person who is worried and telling you everything at once, which is most owners on most days.
 
 On hard, decoys are added on top: findings that are genuinely true of this animal but point at a
 different disease. One at 100%, two at 90%, three at 80%. The debrief names each one and what
