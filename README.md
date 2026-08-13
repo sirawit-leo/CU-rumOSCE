@@ -55,8 +55,21 @@ open osce-game.html      # macOS   ·   Windows: start   ·   Linux: xdg-open
 
 Clicking everything is not a strategy. There is a **precision score**: a player who performs forty
 actions and gets six useful findings scores worse than one who performs twelve and gets ten. The
-skill being trained is knowing what *not* to do. The clock never stops and **you cannot go back a
-step** — when it reaches zero the station closes and you are marked on what you managed.
+skill being trained is knowing what *not* to do. The clock never stops, and when it reaches zero
+the station closes and you are marked on what you managed.
+
+### Two difficulty levels
+
+| | **Hard** — the exam | **Easy** — practice |
+|---|---|---|
+| Going back a step | not possible | allowed from triage through drug selection, **−1 min each time** |
+| Strength and label dose | shown | shown |
+| **Label contraindications and cautions** | **withheld** | shown |
+
+Hard is the default and is what standing at the real cabinet feels like: the bottle tells you it is
+100 mg/mL, and whether it must not go into a milking cow is something you are expected to already
+know. Easy turns the label over for you. Either way the red flags still score — giving a dry-cow
+tube to a milking cow costs the same in both.
 
 ### The six stages
 
@@ -85,6 +98,7 @@ Sixty points sit on the four decisions that actually determine whether the anima
 - It never names the disease.
 - **There is no calculator.** If you want the animal's weight you have to pick up the weight tape during the examination.
 - **The drug list is not filtered.** Lutalyse, xylazine, oestradiol, dexamethasone and gentamicin sit in the same random list as the right answer.
+- **On hard it will not warn you off a drug.** The strength and the label dose are there; that ivermectin must never touch a milking cow is not. You find out when you are marked.
 - **Red flags are scored.** Giving a dry-cow intramammary tube to a milking cow, or a prostaglandin to a pregnant animal, is caught and penalised.
 - **The milk-withdrawal question can be a trap.** If the owner already treated the animal before you arrived, the governing withdrawal may be that earlier drug, not the one you just gave — but you only learn about it if you asked.
 

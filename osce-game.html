@@ -656,6 +656,8 @@ h1,h2,h3{ margin:0; }
 .tsec p{ font-size:var(--ds-fs-md); margin:0 0 8px; color:var(--ds-text-2); }
 .tsec p b{ color:var(--ds-text); }
 .tsec p:last-child{ margin-bottom:0; }
+.ds-btn.back{ margin-inline-end:10px; }
+.warnline{ color:var(--ds-warning); }
 .hit{ color:var(--ds-text); }
 .hit::marker{ content:"✓ "; color:var(--ds-good); }
 .miss{ color:var(--ds-muted); }
@@ -693,7 +695,7 @@ kbd{ font-family:var(--g-mono); font-size:var(--ds-fs-xs); background:var(--ds-c
     </a>
     <div>
       <h1 class="ds-title">CU Ruminant OSCE</h1>
-      <p class="ds-sub">สถานีโคนม 20 นาที · สุ่มเคสใหม่ทุกรอบ · สื่อซ้อมสอบที่นิสิตทำเอง ไม่ใช่สื่อของคณะ</p>
+      <p class="ds-sub">สถานีโคนม 20 นาที · สุ่มเคสใหม่ทุกรอบ</p>
     </div>
   </div>
   <div class="hdr-right">
@@ -772,6 +774,13 @@ kbd{ font-family:var(--g-mono); font-size:var(--ds-fs-xs); background:var(--ds-c
   <p class="hint" style="margin-top:10px">กดเลือกกอง แล้วรายชื่อโรคในกองนั้นจะแสดงด้านล่าง</p>
   <div class="peek" id="peek"></div>
 
+  <p class="ds-flabel" style="margin:22px 0 8px">ระดับความยาก</p>
+  <div class="ds-chips" id="diffs">
+    <button class="ds-chip" type="button" data-d="hard" aria-pressed="true">ยาก — เหมือนสอบจริง</button>
+    <button class="ds-chip" type="button" data-d="easy" aria-pressed="false">ง่าย — ฝึกหัด</button>
+  </div>
+  <p class="hint" id="diffNote" style="margin-top:10px"></p>
+
   <div class="btnrow">
     <button class="ds-btn go" type="button" id="btnBegin">รับสายเลย →</button>
     <span class="note" id="poolNote"></span>
@@ -816,7 +825,7 @@ kbd{ font-family:var(--g-mono); font-size:var(--ds-fs-xs); background:var(--ds-c
       <div class="choices grid2" id="prepBox" role="group" aria-label="คำสั่งให้เจ้าของเตรียม"></div>
     </div>
   </div>
-  <div class="btnrow"><button class="ds-btn go" type="button" id="btnGoFarm" disabled>ออกเดินทางไปฟาร์ม →</button></div>
+  <div class="btnrow"><button class="ds-btn back" type="button" id="btnBack2" style="display:none">← ย้อนกลับ (−1 นาที)</button><button class="ds-btn go" type="button" id="btnGoFarm" disabled>ออกเดินทางไปฟาร์ม →</button></div>
 </div>
 
 <!-- ─────────────────────────────────────────────── 3 · the examination -->
@@ -842,7 +851,7 @@ kbd{ font-family:var(--g-mono); font-size:var(--ds-fs-xs); background:var(--ds-c
       <div class="log" id="eLog"></div>
     </div>
   </div>
-  <div class="btnrow"><button class="ds-btn go" type="button" id="btnEndExam">พอแล้ว → วินิจฉัย</button></div>
+  <div class="btnrow"><button class="ds-btn back" type="button" id="btnBack3" style="display:none">← ย้อนกลับ (−1 นาที)</button><button class="ds-btn go" type="button" id="btnEndExam">พอแล้ว → วินิจฉัย</button></div>
 </div>
 
 <!-- ─────────────────────────────────────────────── 4 · diagnosis -->
@@ -855,7 +864,7 @@ kbd{ font-family:var(--g-mono); font-size:var(--ds-fs-xs); background:var(--ds-c
     <div class="ds-chead"><h3 class="ds-ctitle">รายชื่อโรค</h3></div>
     <div class="choices grid2" id="dxBox" role="group" aria-label="เลือกโรคที่วินิจฉัย"></div>
   </div>
-  <div class="btnrow"><button class="ds-btn go" type="button" id="btnDx" disabled>ยืนยันการวินิจฉัย →</button></div>
+  <div class="btnrow"><button class="ds-btn back" type="button" id="btnBack4" style="display:none">← ย้อนกลับ (−1 นาที)</button><button class="ds-btn go" type="button" id="btnDx" disabled>ยืนยันการวินิจฉัย →</button></div>
 </div>
 
 <!-- ─────────────────────────────────────────────── 5 · treatment -->
@@ -879,7 +888,7 @@ kbd{ font-family:var(--g-mono); font-size:var(--ds-fs-xs); background:var(--ds-c
     <p class="ds-csub">ตู้ยาทั้งตู้ 38 รายการ เรียงสุ่ม ไม่มีการกรอง — เลือกได้ <b>สูงสุด 3 ตัว</b> (ยาหลัก · ยาเสริม · ยาทาแผล)</p>
     <div class="choices" id="drugBox" role="group" aria-label="เลือกยาที่จะให้ สูงสุด 3 ตัว"></div>
     <p class="ds-csub" id="drugCount" aria-live="polite"></p>
-    <div class="btnrow"><button class="ds-btn go" type="button" id="btnDrug" disabled>ยืนยันยาที่เลือก →</button></div>
+    <div class="btnrow"><button class="ds-btn back" type="button" id="btnBack5" style="display:none">← ย้อนกลับ (−1 นาที)</button><button class="ds-btn go" type="button" id="btnDrug" disabled>ยืนยันยาที่เลือก →</button></div>
   </div>
   <div class="ds-card" id="txStep2" style="display:none">
     <div class="ds-chead"><h3 class="ds-ctitle" id="calcHead">ขั้นที่ 3 — ขนาดยาและปริมาตร</h3></div>
@@ -971,54 +980,54 @@ const el=(t,c,h)=>{const e=document.createElement(t);if(c)e.className=c;if(h!=nu
 /* ═════════ ตู้ยา ═════════ */
 const DRUGS=[
  {id:"oxy",n:"Oxytetra L.A. 20% (KELA)",g:"Oxytetracycline",conc:200,routes:["IM"],
-  wdK:"4d",wdH:96,note:"ฉลาก 20 mg/kg (1 cc/10 kg) IM ทุก 3 วัน · <b>นม 4 วัน · เนื้อ 21 วัน</b> · 🛑 ห้ามเกิน 20 cc ต่อตำแหน่ง · ห้ามใช้ในโคโรคตับ/ไต"},
+  wdK:"6d",wdH:144,note:"ฉลาก 20 mg/kg (1 cc/10 kg) IM ทุก 3 วัน · <b>นม 6 วัน · เนื้อ 21 วัน</b>",warn:"🛑 ห้ามเกิน 20 cc ต่อตำแหน่ง · ห้ามใช้ในโคโรคตับ/ไต"},
  {id:"amox",n:"Amoxykel 15% L.A. (KELA)",g:"Amoxicillin trihydrate",conc:150,routes:["IM","SC"],
-  wdK:"72",wdH:72,note:"ฉลาก 7.5–15 mg/kg ซ้ำทุก 36–48 ชม. · ห้ามใช้ในสัตว์แพ้ penicillin/cephalosporin"},
+  wdK:"72",wdH:72,note:"ฉลาก 7.5–15 mg/kg ซ้ำทุก 36–48 ชม.",warn:"ห้ามใช้ในสัตว์แพ้ penicillin/cephalosporin"},
  {id:"enro",n:"Enroguard 10% / Floxidin 10%",g:"Enrofloxacin",conc:100,routes:["SC","IM","IV"],
-  wdK:"84",wdH:84,note:"ยาควบคุมพิเศษ · ฉลาก SC: นม 84 ชม. เนื้อ 10 วัน · IV: นม 72 ชม. เนื้อ 4 วัน · ห้ามใช้ในลูกสัตว์ไม่หย่านม"},
+  wdK:"84",wdH:84,note:"ยาควบคุมพิเศษ · ฉลาก SC: นม 84 ชม. เนื้อ 10 วัน · IV: นม 72 ชม. เนื้อ 4 วัน",warn:"ห้ามใช้ในลูกสัตว์ไม่หย่านม"},
  {id:"flu",n:"Fluniguard",g:"Flunixin meglumine",conc:50,routes:["IV","IM"],
-  wdK:"24",wdH:24,note:"NSAID · 🛑 ห้ามใช้ในโคที่จะคลอดภายใน 48 ชม. (คลอดช้า รกค้าง) · ระวังในสัตว์ขาดน้ำ/ไตเสีย"},
+  wdK:"24",wdH:24,note:"NSAID",warn:"🛑 ห้ามใช้ในโคที่จะคลอดภายใน 48 ชม. (คลอดช้า รกค้าง) · ระวังในสัตว์ขาดน้ำ/ไตเสีย"},
  {id:"sul",n:"Sulfaprim (FATRO)",g:"Sulfonamide 200 mg + Trimethoprim 40 mg/mL",conc:null,
   fixed:"ฉลาก 10–20 mL ต่อ 100 kg/วัน",routes:["IM","IV"],wdK:"5d",wdH:120,
-  note:"นม 3–5 วัน เนื้อ 14 วัน · ระวังตกตะกอนในไต ต้องให้น้ำเพียงพอ"},
+  note:"นม 3–5 วัน เนื้อ 14 วัน",warn:"ระวังตกตะกอนในไต ต้องให้น้ำเพียงพอ"},
  {id:"ber",n:"Berenil (ซองผง)",g:"Diminazene aceturate",conc:84,routes:["IM"],
-  wdK:"72",wdH:72,note:"ฉลาก 1.05 g ละลายน้ำ 12.5 mL = 84 mg/mL · 3.5 mg/kg IM ลึก · 1 ซองครอบคลุม ~300 kg · เนื้อ 21 วัน · เกินขนาดเป็นพิษต่อสมอง"},
+  wdK:"72",wdH:72,note:"ฉลาก 1.05 g ละลายน้ำ 12.5 mL = 84 mg/mL · 3.5 mg/kg IM ลึก · 1 ซองครอบคลุม ~300 kg · เนื้อ 21 วัน",warn:"เกินขนาดเป็นพิษต่อสมอง"},
  {id:"gen",n:"AAGENT 10% (FATRO)",g:"Gentamicin",conc:100,routes:["IM","SC","IV"],
-  wdK:"3-5d",wdH:120,note:"นม <b>3–5 วัน</b> สำหรับการใช้ IM ตามฉลาก · ⚠️ ถ้าใช้นอกฉลากหรือสอดเต้า อาจยืดเป็น <b>10 วันขึ้นไป</b> · 🛑 <b>เนื้อ 49 วัน</b> ยาวที่สุดในตู้ · aminoglycoside ตกค้างในไตนานมาก หลายประเทศห้ามใช้ในสัตว์ผลิตอาหาร · ห้ามใช้ในไตวายรุนแรง"},
+  wdK:"3-5d",wdH:120,note:"นม <b>3–5 วัน</b> สำหรับการใช้ IM ตามฉลาก · ⚠️ ถ้าใช้นอกฉลากหรือสอดเต้า อาจยืดเป็น <b>10 วันขึ้นไป</b> · 🛑 <b>เนื้อ 49 วัน</b> ยาวที่สุดในตู้",warn:"aminoglycoside ตกค้างในไตนานมาก หลายประเทศห้ามใช้ในสัตว์ผลิตอาหาร · ห้ามใช้ในไตวายรุนแรง"},
  {id:"ubro",n:"Ubrolexin (หลอดเข้าเต้า)",g:"Cefalexin 200 mg + Kanamycin 100,000 IU/หลอด",
   conc:null,fixed:"1 หลอด/เต้า วันละครั้ง 2 วัน",routes:["เข้าเต้า"],wdK:"5d",wdH:120,
   note:"สำหรับโครีดนม · นม 5 วัน เนื้อ 10 วัน"},
  {id:"dry",n:"Drycloxa-kel (หลอดเข้าเต้า)",g:"Cloxacillin benzathine 784 mg/หลอด",conc:null,
   fixed:"1 หลอด/เต้า หลังรีดครั้งสุดท้าย",routes:["เข้าเต้า"],wdK:"72",wdH:72,danger:"lact",
-  note:"เนื้อ 28 วัน · ต้องสอดก่อนคาดคลอดอย่างน้อย 35 วัน",
+  note:"เนื้อ 28 วัน",warn:"ต้องสอดก่อนคาดคลอดอย่างน้อย 35 วัน",
   dangerMsg:"Drycloxa-kel เป็นหลอดสำหรับ<b>โคพักรีด</b> — ฉลากระบุห้ามใช้ในแม่โคที่กำลังให้นม"},
  {id:"ca",n:"Calcium borogluconate 500 mL",g:"Calcium borogluconate",conc:null,
   fixed:"250–500 mL IV ช้า ๆ (หรือ SC)",routes:["IV","SC"],wdK:"none",wdH:0,
-  note:"นม 0 เนื้อ 0 · 🩺 IV ช้ามาก ฟังหัวใจตลอด เสี่ยงหัวใจวายถ้าให้เร็ว"},
+  note:"นม 0 เนื้อ 0",warn:"🩺 IV ช้ามาก ฟังหัวใจตลอด เสี่ยงหัวใจวายถ้าให้เร็ว"},
  {id:"bay",n:"Baymec (Elanco)",g:"Ivermectin",conc:10,routes:["SC","IM"],
-  wdK:"nolact",wdH:null,note:"🛑 ฉลากห้ามใช้ในโครีดนม และห้ามใช้ในโคท้อง 60 วันก่อนคลอด · โคเนื้อหยุดยา 35 วัน · ห้ามฉีด IV · ไม่เกิน 10 cc ต่อตำแหน่ง"},
+  wdK:"nolact",wdH:null,note:"โคเนื้อหยุดยา 35 วัน",warn:"🛑 ฉลากห้ามใช้ในโครีดนม และห้ามใช้ในโคท้อง 60 วันก่อนคลอด · ห้ามฉีด IV · ไม่เกิน 10 cc ต่อตำแหน่ง"},
  {id:"cyd",n:"Cydectin pour-on",g:"Moxidectin",conc:5,routes:["ราดหลัง"],
   wdK:"none",wdH:0,note:"✅ ฉลากระบุ<b>ใช้ในโครีดนมได้</b> แต่ต้องเว้นการให้ซ้ำอย่างน้อย 21 วัน · เนื้อ 14–28 วัน"},
  {id:"alb",n:"ABENTEL suspension",g:"Albendazole",conc:112.5,routes:["ป้อน"],
-  wdK:"warn",wdH:null,note:"ฉลาก 10 mL ต่อ 100 kg ป้อน · ครอบคลุม<b>พยาธิตัวกลม ตัวแบน และพยาธิใบไม้ตับ</b> · เนื้อ 4 วัน · 🛑 ห้ามใช้ในโคท้อง 45 วันแรก"},
+  wdK:"warn",wdH:null,note:"ฉลาก 10 mL ต่อ 100 kg ป้อน · ครอบคลุม<b>พยาธิตัวกลม ตัวแบน และพยาธิใบไม้ตับ</b> · เนื้อ 4 วัน",warn:"🛑 ห้ามใช้ในโคท้อง 45 วันแรก"},
  {id:"bio",n:"Biocatalin (FATRO)",g:"Vitamin B complex + กรดอะมิโน",conc:null,
   fixed:"โคโต 20 mL/วัน · ลูกโค 5–10 mL/วัน",routes:["IM"],wdK:"warn",wdH:null},
  {id:"cat",n:"Catosal 10%",g:"Butafosfan 100 mg/mL + Vit B12",conc:null,fixed:"10–25 mL",
   routes:["IV","IM","SC"],wdK:"none",wdH:0,note:"นม 0 เนื้อ 0 · ใช้ร่วมกับยาอื่นได้"},
  {id:"pg",n:"Zeglycol",g:"Propylene glycol",conc:null,fixed:"250–500 mL ป้อนทางปาก",
-  routes:["ป้อน"],wdK:"none",wdH:0,note:"นม 0 เนื้อ 0 · ให้มากเกินไปทำให้ท้องเสีย"},
+  routes:["ป้อน"],wdK:"none",wdH:0,note:"นม 0 เนื้อ 0",warn:"ให้มากเกินไปทำให้ท้องเสีย"},
  {id:"nss",n:"NSS 0.9%",g:"0.9% Sodium chloride",conc:null,fixed:"ให้ตามการประเมินภาวะขาดน้ำ",
-  routes:["IV","SC"],wdK:"none",wdH:0,note:"นม 0 เนื้อ 0 · ระวังให้เกินในสัตว์โรคหัวใจ"},
+  routes:["IV","SC"],wdK:"none",wdH:0,note:"นม 0 เนื้อ 0",warn:"ระวังให้เกินในสัตว์โรคหัวใจ"},
  {id:"dexa",n:"Dexamethasone",g:"Dexamethasone sodium phosphate",conc:4,routes:["IV","IM"],
   wdK:"warn",wdH:null,danger:"preg",
   note:"⚠️ ระยะหยุดยาไม่ได้ระบุในเอกสาร — ต้องอ่านข้างขวด",
   dangerMsg:"Dexamethasone <b>ทำให้แท้ง</b> — สัตว์ตัวนี้ตั้งท้องอยู่"},
  {id:"nova",n:"Nova AD₃E",g:"Vitamin A, D₃, E",conc:null,
   fixed:"โคโต 1 mL/100 kg · ลูกโค 1 mL/50 kg ครั้งเดียว",routes:["IM","SC"],
-  wdK:"none",wdH:0,note:"นม 0 · เนื้อ 28 วันตามฉลากบนกล่อง (⚠️ ตารางยาเวชเขียน 50 วัน — ยึดฉลาก) · 🛑 ห้ามให้ IV"},
+  wdK:"none",wdH:0,note:"นม 0 · เนื้อ 28 วันตามฉลากบนกล่อง (⚠️ ตารางยาเวชเขียน 50 วัน — ยึดฉลาก)",warn:"🛑 ห้ามให้ IV"},
  {id:"sel",n:"Selevet (FATRO)",g:"Vitamin E 50 mg + Selenium 1 mg/mL",conc:null,
   fixed:"1 mL ต่อ 25–50 kg",routes:["SC","IM"],wdK:"warn",wdH:null,
-  note:"เนื้อ 28 วัน · 🛑 ซีลีเนียมช่วงปลอดภัยแคบ เกินขนาดเป็นพิษถึงตาย"},
+  note:"เนื้อ 28 วัน",warn:"🛑 ซีลีเนียมช่วงปลอดภัยแคบ เกินขนาดเป็นพิษถึงตาย"},
  {id:"chl",n:"Chloramine",g:"Chlorpheniramine maleate",conc:10,routes:["IM"],
   wdK:"none",wdH:0,note:"ฉลาก 1 cc ต่อ 5–20 kg ทุก 12 ชม. · 0 วัน"},
  {id:"atr",n:"Atropine sulfate",g:"Atropine sulfate",conc:1,routes:["IV","IM","SC"],
@@ -1031,35 +1040,35 @@ const DRUGS=[
   danger:"sed",note:"นม 24 ชม.",
   dangerMsg:"Xylazine ในสัตว์ป่วยหนัก = เสี่ยงล้ม สำลัก ท้องอืด · ทำให้ไวต่อแสงและเสียง · <b>อาจทำให้แท้ง</b>"},
  {id:"furo",n:"Furomide 500 mg",g:"Furosemide",conc:null,fixed:"1–2 mg/kg",
-  routes:["ป้อน","IM","IV"],wdK:"72",wdH:72,note:"นม 2 วัน เนื้อ 2 วัน · ระวังขาดน้ำและอิเล็กโทรไลต์ไม่สมดุล"},
+  routes:["ป้อน","IM","IV"],wdK:"72",wdH:72,note:"นม 2 วัน เนื้อ 2 วัน",warn:"ระวังขาดน้ำและอิเล็กโทรไลต์ไม่สมดุล"},
  {id:"asp",n:"Aspirin (เม็ด 325 mg)",g:"Acetylsalicylic acid",conc:null,
   fixed:"50–100 mg/kg ป้อน ทุก 12–24 ชม.",routes:["ป้อน"],wdK:"5d",wdH:120,
-  note:"ระยะหยุดยา 120 ชม. · ระวังแผลในกระเพาะถ้าใช้นาน · โค 400 kg ต้องใช้หลายสิบเม็ด"},
+  note:"ระยะหยุดยา 120 ชม. · โค 400 kg ต้องใช้หลายสิบเม็ด",warn:"ระวังแผลในกระเพาะถ้าใช้นาน"},
  {id:"oxt",n:"Oxytocin",g:"Oxytocin 10 IU/mL",conc:null,fixed:"10–40 IU (1–4 mL)",
-  routes:["IM","IV"],wdK:"none",wdH:0,note:"นม 0 เนื้อ 0 · ห้ามใช้ถ้าปากมดลูกยังไม่เปิด"},
+  routes:["IM","IV"],wdK:"none",wdH:0,note:"นม 0 เนื้อ 0",warn:"ห้ามใช้ถ้าปากมดลูกยังไม่เปิด"},
  {id:"lut",n:"Lutalyse",g:"Dinoprost tromethamine 5 mg/mL",conc:null,fixed:"5 mL IM",
-  routes:["IM"],wdK:"none",wdH:0,danger:"preg",note:"นม 0 เนื้อ 2 วัน · 🛑 ห้ามให้ IV · คนท้องและคนเป็นหอบหืดห้ามสัมผัสยา",
+  routes:["IM"],wdK:"none",wdH:0,danger:"preg",note:"นม 0 เนื้อ 2 วัน",warn:"🛑 ห้ามให้ IV · คนท้องและคนเป็นหอบหืดห้ามสัมผัสยา",
   dangerMsg:"Lutalyse (PGF₂α) <b>สลาย corpus luteum และทำให้แท้ง</b> — สัตว์ตัวนี้ตั้งท้องอยู่"},
  {id:"est",n:"Oestradiol benzoate",g:"Estradiol benzoate 5 mg/mL",conc:null,fixed:"1–5 mg IM",
   routes:["IM"],wdK:"none",wdH:0,danger:"preg",note:"นม 0 · ใช้คู่กับ CIDR ในโปรแกรมเหนี่ยวนำการเป็นสัด",
   dangerMsg:"Oestradiol benzoate ฉลากระบุ <b>ห้ามใช้ในโคที่ตั้งท้อง</b>"},
  {id:"soda",n:"Baking soda (ผง)",g:"Sodium bicarbonate",conc:null,
   fixed:"~1 g/kg ผ่านสายยาง หรือผสมอาหาร",routes:["ป้อน"],wdK:"none",wdH:0,
-  note:"0 วัน · ให้มากเกินไปทำให้เลือดเป็นด่าง"},
+  note:"0 วัน",warn:"ให้มากเกินไปทำให้เลือดเป็นด่าง"},
  {id:"amp",n:"Amprolium 200 (ผง)",g:"Amprolium 200 mg/g",conc:null,
   fixed:"10 mg/kg ป้อน 5 วัน (off-label ในลูกโค)",routes:["ป้อน"],wdK:"warn",wdH:null,
-  note:"⚠️ ขัดขวางการดูดซึมวิตามิน B1 — เสี่ยงกระตุ้น PEM"},
+  note:"",warn:"⚠️ ขัดขวางการดูดซึมวิตามิน B1 — เสี่ยงกระตุ้น PEM"},
  {id:"cyclo",n:"Cyclo Spray",g:"Chlortetracycline 2–3% พ่นภายนอก",conc:null,
   fixed:"พ่นบริเวณแผล 3–5 วินาที",routes:["พ่นภายนอก"],wdK:"none",wdH:0,
   note:"นม 0 เนื้อ 0 · แผลติดเชื้อผิวหนัง แผลหลังผ่าตัด กีบเน่า"},
  {id:"repi",n:"IntraRepiderma",g:"Chelated copper + zinc พ่นภายนอก",conc:null,
   fixed:"พ่นกีบหรือผิวหนัง 3 วินาที",routes:["พ่นภายนอก"],wdK:"none",wdH:0,
-  note:"นม 0 เนื้อ 0 · กีบเน่า digital dermatitis · ติดไฟง่าย"},
+  note:"นม 0 เนื้อ 0 · กีบเน่า digital dermatitis",warn:"ติดไฟง่าย"},
  {id:"mag",n:"Magkil herbal spray",g:"สมุนไพร (สะเดา ยูคาลิปตัส)",conc:null,
   fixed:"พ่นบริเวณแผล",routes:["พ่นภายนอก"],wdK:"none",wdH:0,
   note:"0 วัน · ไล่แมลง รักษาแผลที่มีหนอนแมลงวัน"},
  {id:"h2o2",n:"Hydrogen peroxide 3%",g:"Hydrogen peroxide",conc:null,fixed:"ชะล้างบาดแผล",
-  routes:["ล้างแผล"],wdK:"none",wdH:0,note:"0 วัน · ระคายเนื้อเยื่อปกติถ้าใช้นาน ไม่ควรใช้ในแผลลึก"},
+  routes:["ล้างแผล"],wdK:"none",wdH:0,note:"0 วัน",warn:"ระคายเนื้อเยื่อปกติถ้าใช้นาน ไม่ควรใช้ในแผลลึก"},
  {id:"beta",n:"Betamed solution",g:"Povidone iodine 10%",conc:null,fixed:"ทาแผล",
   routes:["ล้างแผล"],wdK:"none",wdH:0,note:"0 วัน · ล้างแผลและฆ่าเชื้อสะดือลูกสัตว์ ปลอดภัยต่อเนื้อเยื่อ"},
  {id:"zns",n:"Zinc sulfate (ผง)",g:"Zinc sulfate",conc:null,fixed:"ผสมอ่างจุ่มกีบ 5–10%",
@@ -2063,6 +2072,7 @@ const RAIL=["เริ่ม","โทรศัพท์","TRIAGE","ตรวจ"
 
 const LACT={milking:"โครีดนม",dry:"โคพักรีด (dry cow)",heifer:"โคสาว ยังไม่เคยคลอด"};
 let MODE="all";
+let DIFF="hard";   // "hard" = เหมือนสอบจริง · "easy" = ฝึกหัด
 function pool(){return MODE==="all"?CASES:CASES.filter(c=>c.tier===MODE)}
 function peekTable(m){
   const list=m==="all"?CASES:CASES.filter(c=>c.tier===m);
@@ -2088,6 +2098,15 @@ function boot(){
   ms[0].textContent=`ทั้งหมด (${CASES.length})`;
   ms[1].textContent=`Major เท่านั้น (${mj})`;
   ms[2].textContent=`Minor เท่านั้น (${mn})`;
+  const dfs=[...$("diffs").querySelectorAll(".ds-chip")];
+  const paintDiff=()=>{
+    dfs.forEach(x=>x.setAttribute("aria-pressed",x.dataset.d===DIFF?"true":"false"));
+    $("diffNote").innerHTML = DIFF==="easy"
+      ? "ย้อนกลับได้ตั้งแต่หน้า TRIAGE จนถึงหน้าเลือกยา <b>ครั้งละ −1 นาที</b> · ฉลากยาบอก<b>ข้อห้ามและข้อควรระวัง</b>ให้ด้วย"
+      : "<b>ย้อนกลับไม่ได้</b> · ฉลากยาบอกความแรงและขนาดยา แต่<b>ไม่บอกข้อห้าม</b> — ต้องรู้เอง เหมือนยืนอยู่หน้าตู้จริง";
+  };
+  dfs.forEach(b=>{b.onclick=()=>{if(!b.dataset.d)return;DIFF=b.dataset.d;paintDiff()}});
+  paintDiff();
   const showPeek=()=>{$("peek").innerHTML=peekTable(MODE);$("peek").classList.add("open")};
   ms.forEach(b=>{
     b.onclick=()=>{MODE=b.dataset.m;
@@ -2178,7 +2197,8 @@ function newGame(same){
   T=1200;asked.clear();examined.clear();tested.clear();
   pickTriage=null;pickPrep.clear();pickDx=null;
   wIn=0;pickDrugs=[];calcDrug=null;doseIn=0;volIn=0;routeIn="";ce={};flags=[];ended=false;
-  calcList=[];calcIdx=0;calcAns={};rounds={mode:"none",ansKey:null};
+  calcList=[];calcIdx=0;calcAns={};rounds={mode:"none",ansKey:null};txCharged=false;
+  [2,3,4,5].forEach(k=>{const b=$("btnBack"+k);if(b)b.style.display=DIFF==="easy"?"":"none"});
   stopClock();paintClock();
   $("openLine").textContent="“"+fill(C.open)+"”";
   $("qLog").innerHTML="";$("eLog").innerHTML="";
@@ -2258,12 +2278,15 @@ function buildDx(){
     h.appendChild(b);
   });
 }
+let txCharged=false;
 function buildTx(){
   $("txStep0").style.display="none";$("txStep1").style.display="";$("txStep2").style.display="none";
   $("flagBox").innerHTML="";
   wIn=V.w;
+  pickDrugs=[];$("btnDrug").disabled=true;   // เข้ามาใหม่ต้องเลือกยาใหม่ ปุ่มกับสถานะจะได้ไม่หลุดกัน
   const weighed=examined.has("e23");
-  if(!weighed){
+  if(!weighed&&!txCharged){
+    txCharged=true;
     spend(120);
     $("flagBox").innerHTML=`<div class="ds-callout g-warn"><b>⏱️ −2 นาที</b><span>`
       +`คุณไม่ได้หยิบสายวัดรอบอกตอนตรวจ จึงต้องเดินกลับไปวัดก่อนคำนวณยา — <b>เสียเวลา 2 นาที</b><br>`
@@ -2567,6 +2590,12 @@ $("btnEndPhone").onclick=()=>show(2);
 $("btnGoFarm").onclick=()=>show(3);
 $("btnEndExam").onclick=()=>show(4);
 $("btnDx").onclick=()=>{buildTx();show(5)};
+/* ระดับง่าย: ย้อนกลับได้ เสียเวลาครั้งละ 1 นาที */
+const BACK_TO={2:1,3:2,4:3,5:4};
+Object.keys(BACK_TO).forEach(k=>{
+  const b=$("btnBack"+k); if(!b)return;
+  b.onclick=()=>{if(DIFF!=="easy"||ended)return;spend(60);show(BACK_TO[k])};
+});
 $("wIn").oninput=e=>{wIn=parseFloat(e.target.value)||0;$("btnW").disabled=!(wIn>0)};
 $("btnW").onclick=()=>{$("txStep0").style.display="none";$("txStep1").style.display=""};
 $("btnDrug").onclick=()=>{
@@ -2591,6 +2620,9 @@ function showCalc(){
   $("drugFacts").innerHTML=`<b>${d.n}</b><br>${d.g}`
     +(d.conc?` · ความแรง <b>${d.conc} mg/mL</b>`:"")
     +(d.fixed?`<br>ฉลากระบุ: ${d.fixed}`:"")+(d.note?`<br>${d.note}`:"")
+    +(d.warn?(DIFF==="easy"
+        ?`<br><span class="warnline">${d.warn}</span>`
+        :`<br><span class="ds-mutedtext">ฉลากมีข้อห้ามและข้อควรระวังพิมพ์อยู่ — ระดับยากไม่แสดงให้</span>`):"")
     +`<br>น้ำหนักโค <b>${wIn} kg</b>`
     +(calcList.length>1?`<br><br>ยาที่เลือกไว้: `+calcList.map((x,i)=>
         i===calcIdx?`<b>${D(x).n}</b>`:`<span style="opacity:.5">${D(x).n}</span>`).join(" · "):"");
