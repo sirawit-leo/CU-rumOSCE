@@ -2389,7 +2389,10 @@ function buildCE(){
       : `สัตว์ตัวนี้ <b>${V.lact==="dry"?"เป็นโคพักรีด":"เป็นโคสาว ยังไม่เคยรีดนม"}</b> — แต่ยังอยู่ในฟาร์มโคนม`)
     + (knewPrior
         ? `<br>⚠️ จากที่คุณถามประวัติการรักษาไว้ เจ้าของฉีด <b>${D(V.prior.d).n.split(" (")[0]}</b> ไปเมื่อ <b>${fmtTH(V.priorAt)}</b>`
-        : (V.prior?`<br><span class="ds-mutedtext">(คุณไม่ได้ถามว่าเจ้าของเคยให้ยาอะไรไปแล้ว)</span>`:""));
+        // โหมดยากไม่บอกใบ้ว่ามีอะไรที่ยังไม่ได้ถาม — ไปรู้เอาตอนเฉลย
+        : (V.prior&&DIFF==="easy"
+            ? `<br><span class="ds-mutedtext">(คุณไม่ได้ถามว่าเจ้าของเคยให้ยาอะไรไปแล้ว)</span>`
+            : ""));
 
   const group=(key,label,opts)=>{
     h.appendChild(el("div","ds-flabel",label));
@@ -2541,7 +2544,10 @@ function grade(){
     ce.prog===V.sev.prog?"ถูกต้อง":`รอบนี้ (ความรุนแรงที่สุ่มได้) ที่เหมาะคือ "${PROG.find(p=>p[0]===V.sev.prog)[1]}"`]);
 
   const raw=R.reduce((a,r)=>a+r[1],0),max=R.reduce((a,r)=>a+r[2],0);
-  const over=T<0?Math.floor(-T/30):0,pen=flags.length*5+over,total=Math.max(0,raw-pen);
+  // ไม่ถามว่าเจ้าของให้ยาอะไรไปแล้ว ทั้งที่รอบนี้มีจริง — คำถามนี้ต้องถามทุกเคส
+  const missedPrior=!!V.prior&&!asked.has("q16");
+  const over=T<0?Math.floor(-T/30):0;
+  const pen=flags.length*5+over+(missedPrior?3:0),total=Math.max(0,raw-pen);
   const gr=total>=88?"S":total>=74?"A":total>=58?"B":total>=42?"C":"D";
   const v={S:"ผ่านฉลุย — พร้อมสอบจริง",A:"ผ่านสบาย",B:"ผ่านฉิวเฉียด",
     C:"ต้องซ้อมอีก",D:"ยังไม่ผ่าน"}[gr];
@@ -2559,8 +2565,15 @@ function grade(){
   R.forEach(r=>{h+=`<tr><td>${r[0]}</td><td class="n">${r[1]}/${r[2]}</td>
     <td><span class="barbg"><span class="bar" style="width:${Math.round(r[1]/r[2]*56)||0}px"></span></span></td>
     <td>${r[3]}</td></tr>`});
-  if(pen)h+=`<tr class="penrow"><td><b>หักคะแนน</b></td><td class="n">−${pen}</td><td></td><td>${
-    flags.map(f=>"⚠️ "+f).join("<br>")}${over?(flags.length?"<br>":"")+"เกินเวลา "+(-T)+" วินาที (−"+over+")":""}</td></tr>`;
+  if(pen){
+    const lines=flags.map(f=>"⚠️ "+f);
+    if(missedPrior)lines.push(`🛑 <b>ไม่ได้ถามว่าเจ้าของให้ยาอะไรไปแล้ว (−3)</b> — รอบนี้เจ้าของฉีด `
+      +`<b>${D(V.prior.d).n.split(" (")[0]}</b> ไปเมื่อ ${fmtTH(V.priorAt)} `
+      +`ซึ่ง${(D(V.prior.d).wdH!=null&&V.priorAt&&rounds.end&&new Date(V.priorAt.getTime()+D(V.prior.d).wdH*3600000).getTime()>=rounds.end.getTime())?"<b>เป็นตัวที่กำหนดวันส่งนม</b> ไม่ใช่ยาที่คุณเพิ่งให้":"ไม่ได้กำหนดวันส่งนมรอบนี้ แต่คุณไม่มีทางรู้ได้เลยถ้าไม่ถาม"} `
+      +`· คำถามนี้ต้องถามทุกเคส`);
+    if(over)lines.push(`เกินเวลา ${-T} วินาที (−${over})`);
+    h+=`<tr class="penrow"><td><b>หักคะแนน</b></td><td class="n">−${pen}</td><td></td><td>${lines.join("<br>")}</td></tr>`;
+  }
   h+=`</tbody></table></div></div>`;
   h+=`<div class="ds-card tsec" style="margin-top:16px">
     <div class="ds-chead"><h3 class="ds-ctitle">เฉลย — ${C.name}</h3></div>

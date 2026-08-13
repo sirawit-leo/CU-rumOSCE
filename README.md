@@ -101,7 +101,7 @@ Sixty points sit on the four decisions that actually determine whether the anima
 - **The drug list is not filtered.** Lutalyse, xylazine, oestradiol, dexamethasone and gentamicin sit in the same random list as the right answer.
 - **On hard it will not warn you off a drug.** The strength and the label dose are there; that ivermectin must never touch a milking cow is not. You find out when you are marked.
 - **Red flags are scored.** Giving a dry-cow intramammary tube to a milking cow, or a prostaglandin to a pregnant animal, is caught and penalised.
-- **The milk-withdrawal question can be a trap.** If the owner already treated the animal before you arrived, the governing withdrawal may be that earlier drug, not the one you just gave — but you only learn about it if you asked.
+- **The milk-withdrawal question can be a trap.** If the owner already treated the animal before you arrived, the governing withdrawal may be that earlier drug, not the one you just gave. **Not asking costs 3 marks** on the rounds where there was something to find. Easy tells you at the time that you never asked; hard lets you discover it in the debrief.
 
 ### How complete the picture is
 
