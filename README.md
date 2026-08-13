@@ -83,16 +83,20 @@ score identically in both: easy makes the label readable, not the mistake free.
 
 ### Marking, out of 100
 
-Sixty points sit on the four decisions that actually determine whether the animal lives:
-
 | | |
 |---|---|
 | Triage | 12 |
 | Instructions to the owner | 12 |
-| Diagnosis | 20 |
-| Choosing the right drug | 16 |
-| **Core total** | **60** |
-| History, examination, precision, dose arithmetic, route, withdrawal, notification, prognosis | 40 |
+| **Precision** — how much of what you did was worth doing | 13 |
+| Diagnosis | 12 |
+| Choosing the right drug | 10 |
+| Milk withdrawal, and the exact date and round it may be sold | 8 |
+| History, examination, cow-side tests, dose, volume, route, notification, prognosis | 33 |
+
+**Get the diagnosis wrong and the drug, the dose and the volume all score zero** — 20 marks gone on
+top of the 12 for the diagnosis itself. Reaching for the right bottle while calling the disease
+something else is luck, not competence, and the station marks it that way. The withdrawal questions
+still count: whatever you injected, you are expected to know how long its milk must be thrown away.
 
 ### What the game will not do for you
 
