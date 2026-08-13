@@ -1,4 +1,4 @@
-# CU-rumOSCE
+# CU Ruminant OSCE
 
 **A 20-minute dairy-cattle OSCE station, simulated in a single offline HTML file.**
 
