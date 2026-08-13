@@ -133,7 +133,7 @@ maiden heifers, and the withdrawal advice changes accordingly.
 
 Published knowing these are open. **Do not trust them without checking.**
 
-- **AAGENT 10%** is confirmed as gentamicin 100 mg/mL with a 49-day meat withdrawal, but its **milk withdrawal is not printed on the box**.
+- **Gentamicin (AAGENT 10%)** carries a **3–5 day milk withdrawal for approved intramuscular use**, and the game uses the conservative end of that range. That figure holds only on-label: **off-label use or intramammary infusion can push it to 10 days or longer**, with no single number to rely on. The 49-day meat withdrawal is the longest in the cabinet.
 - The **notifiable-disease reporting window** is set to **12 hours**, following section 11 of the Animal Epidemics Act B.E. 2558. Many Thai textbooks and revision notes say 24 hours. Confirm with your instructor before an exam.
 - Several products carry no printed withdrawal time at all, and the drug register and the bottle labels disagree in eight places. **Where they disagree, this project follows the bottle.**
 
@@ -176,4 +176,4 @@ Wrong clinical content is worth fixing straight away. Please
 
 - a dose, route or withdrawal time does not match the actual product label
 - a diagnosis or treatment path contradicts what is taught
-- you have read the **milk withdrawal for AAGENT 10%** off the real bottle
+- a withdrawal time still marked **⚠️** in the interface is printed on a bottle you have in front of you
