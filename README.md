@@ -22,8 +22,13 @@ disease never plays the same way twice.
 
 ## Play it
 
-Download and **open `osce-game.html` in any browser**. No install, no build step, no network — the
-whole thing, including the fonts, styles and images, is inside that one file.
+### ▶ [**sirawit-leo.github.io/CU-rumOSCE**](https://sirawit-leo.github.io/CU-rumOSCE/)
+
+That is the whole thing. Nothing to install, nothing to sign in to.
+
+Or download and **open `osce-game.html` in any browser**. No install, no build step, no network — the
+whole thing, including the fonts, styles and images, is inside that one file, so it runs offline and
+off a USB stick just as well as it runs from the link above.
 
 ```bash
 git clone https://github.com/sirawit-leo/CU-rumOSCE.git
