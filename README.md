@@ -117,7 +117,7 @@ and the debrief tells you afterwards which one you got:
 | **100%** | The classic picture. Every sign the textbook lists, and an owner who answers in one line. |
 | **90%** | One or two supporting signs are missing. The pathognomonic sign is still there. |
 | **80%** | Same missing signs — **and the owner will not stop talking.** |
-| **70%** | The same, plus **he opens with 250 words before you have asked anything.** |
+| **70%** | The same, plus **he opens with 150 words before you have asked anything.** |
 
 At 80% every answer arrives wrapped in something else: what he was doing when he noticed, what his
 wife said, the price of milk, whether you know the road is full of potholes. Nothing he adds is
@@ -125,11 +125,13 @@ clinical and nothing he adds is false; the answer you asked for is in there, who
 just takes about half as long again to read, and the clock is real time. The skill is reading past a
 person who is worried and telling you everything at once, which is most owners on most days.
 
-At 70% the phone call itself is the obstacle. He rings and delivers a quarter of a thousand words
-before you can get a question in: the road, the price of milk, the two workers who went home to
-plant rice, an apology for talking so much. One sentence in the middle of it is the reason he
-called, and it is never the first thing he says. Skimming for the sentence that matters is the
-skill, and every second spent reading the rest is a second off the clock.
+At 70% the phone call itself is the obstacle. He rings and tells you the whole story before you can
+get a question in — he hesitated about ringing, it rained all night and the yard was a mess, he
+walked down the line checking them one by one, and then what he saw; then his wife had said to ring
+last night, the milk price is down again, mind the bridge on the way in. It runs about 150 words in
+the order a worried person actually tells a story, and the sentence that is the reason he called
+sits in the middle of it. Skimming for that sentence is the skill, and every second spent on the
+rest is a second off the clock.
 
 On hard, decoys are added on top: findings that are genuinely true of this animal but point at a
 different disease. One at 100%, two at 90%, three at 80% and 70%. The debrief names each one and
