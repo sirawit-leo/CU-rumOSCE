@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DS — design system</title>
+<link rel="icon" type="image/png" sizes="32x32" href="assets/favicon.png">
+<link rel="stylesheet" href="ds.css">
+<style>
+  /* style-guide chrome only — not part of the system */
+  .sg-sec { margin: 0 0 var(--ds-8); }
+  .sg-h { font-size: var(--ds-fs-lg); font-weight: 650; margin: 0 0 var(--ds-1); letter-spacing: -.01em; }
+  .sg-d { color: var(--ds-text-2); font-size: 13.5px; line-height: 1.7; margin: 0 0 var(--ds-4); max-width: 68ch; }
+  .sg-d code, .sg-code code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
+  .sg-d code { font-size: 12px; background: var(--ds-chip-bg); border: 1px solid var(--ds-border);
+    border-radius: var(--ds-r-sm); padding: 1px 5px; }
+  .sg-code { background: var(--ds-chip-bg); border: 1px solid var(--ds-border); border-radius: var(--ds-r);
+    padding: var(--ds-3) var(--ds-4); font-size: 12px; line-height: 1.65; overflow-x: auto;
+    color: var(--ds-text-2); margin: var(--ds-3) 0 0; white-space: pre; }
+  .sg-demo { background: var(--ds-surface); border: 1px solid var(--ds-border);
+    border-radius: var(--ds-r-lg); padding: var(--ds-4); }
+  .sg-swatches { display: grid; grid-template-columns: repeat(auto-fill, minmax(168px, 1fr)); gap: 10px; }
+  .sg-sw { border: 1px solid var(--ds-border); border-radius: var(--ds-r); overflow: hidden; }
+  .sg-sw i { display: block; height: 46px; }
+  .sg-sw span { display: block; padding: 7px 9px; font-size: 11.5px; color: var(--ds-text-2);
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
+  .sg-toc { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: var(--ds-6); }
+  .sg-toc a { text-decoration: none; }
+</style>
+</head>
+<body class="ds-body ds">
+<div class="ds-wrap">
+
+  <header class="ds-header">
+    <div class="ds-brandrow">
+      <a class="ds-logolink" href="https://github.com/sirawit-leo" target="_blank" rel="noopener noreferrer"
+         title="View on GitHub" aria-label="View on GitHub">
+        <img class="ds-brand ds-brand-onlight" alt="" src="assets/brand-onlight.png">
+        <img class="ds-brand ds-brand-ondark"  alt="" src="assets/brand-ondark.png">
+      </a>
+      <div>
+        <h1 class="ds-title">DS — a design system for self-contained analytical pages</h1>
+        <p class="ds-sub">Two files, no dependencies, no build step ·
+          <code>ds.css</code> + <code>ds.js</code> · everything namespaced <code>ds-</code></p>
+      </div>
+    </div>
+    <button class="ds-btn" id="theme">Dark</button>
+  </header>
+
+  <div class="sg-toc">
+    <a class="ds-navlink" href="#start">Getting started</a>
+    <a class="ds-navlink" href="#tokens">Tokens</a>
+    <a class="ds-navlink" href="#controls">Controls</a>
+    <a class="ds-navlink" href="#cards">Cards &amp; tiles</a>
+    <a class="ds-navlink" href="#charts">Charts</a>
+    <a class="ds-navlink" href="#data">Data display</a>
+    <a class="ds-navlink" href="#brand">Brand</a>
+    <a class="ds-navlink" href="#rules">Rules</a>
+  </div>
+
+  <!-- ------------------------------------------------------------ start -->
+  <section class="sg-sec" id="start">
+    <h2 class="sg-h">Getting started</h2>
+    <p class="sg-d">Copy <code>ds.css</code> and <code>ds.js</code> next to your HTML. The
+      <code>ds</code> class on <code>&lt;body&gt;</code> scopes the reset; <code>ds-body</code>
+      applies the page background and type. Nothing else is required — the theme follows the
+      reader's system setting until someone presses a toggle.</p>
+    <div class="sg-code">&lt;link rel="stylesheet" href="ds.css"&gt;
+&lt;body class="ds-body ds"&gt;
+  &lt;div class="ds-wrap"&gt; … &lt;/div&gt;
+  &lt;script src="ds.js"&gt;&lt;/script&gt;
+&lt;/body&gt;</div>
+  </section>
+
+  <!-- ------------------------------------------------------------ tokens -->
+  <section class="sg-sec" id="tokens">
+    <h2 class="sg-h">Tokens</h2>
+    <p class="sg-d">Every colour is a custom property, so a theme swap is a variable swap.
+      <b>Series colours are ordered</b> — take <code>--ds-s1</code> first and work down; they are
+      sequenced for contrast against each other. <b>Status colours carry meaning</b> and should
+      never be used decoratively: if something is <code>--ds-critical</code> red, a reader is
+      entitled to conclude it is bad.</p>
+    <div class="sg-demo">
+      <div class="sg-swatches" id="swatches"></div>
+    </div>
+    <div class="sg-code">/* three-state theming — order matters */
+:root                                   { --ds-page: #f9f9f7; }   /* always define light */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"])       { --ds-page: #0d0d0d; }   /* system dark */
+}
+:root[data-theme="dark"]                { --ds-page: #0d0d0d; }   /* forced dark wins */</div>
+  </section>
+
+  <!-- ------------------------------------------------------------ controls -->
+  <section class="sg-sec" id="controls">
+    <h2 class="sg-h">Controls</h2>
+    <p class="sg-d">State lives in ARIA, not in a class: <code>aria-pressed</code> for chips,
+      <code>aria-selected</code> for tabs, <code>aria-current="page"</code> for nav. That keeps the
+      styling and the accessibility tree from disagreeing, which they always eventually do when
+      state is tracked twice.</p>
+    <div class="sg-demo">
+      <p class="ds-flabel">Nav</p>
+      <nav class="ds-nav">
+        <a class="ds-navlink" href="#controls" aria-current="page">Home</a>
+        <a class="ds-navlink" href="#controls">Second page</a>
+        <a class="ds-navlink" href="#controls">Third page</a>
+      </nav>
+
+      <p class="ds-flabel" style="margin-top:20px">Chips — a toggle</p>
+      <div class="ds-chips" id="chipdemo">
+        <button class="ds-chip" aria-pressed="true">All months</button>
+        <button class="ds-chip" aria-pressed="false">Jan</button>
+        <button class="ds-chip" aria-pressed="false">Feb</button>
+        <button class="ds-chip" aria-pressed="false">Mar</button>
+      </div>
+
+      <p class="ds-flabel" style="margin-top:20px">Tabs</p>
+      <div class="ds-tabs" id="tabdemo" role="tablist"></div>
+      <p class="ds-secthead" id="tabnote"></p>
+
+      <p class="ds-flabel" style="margin-top:12px">Buttons and search</p>
+      <div class="ds-tools">
+        <button class="ds-btn">Reset</button>
+        <button class="ds-tgl">Table</button>
+        <button class="ds-tgl">⤢ Zoom</button>
+        <input class="ds-search" placeholder="Search…">
+      </div>
+    </div>
+  </section>
+
+  <!-- ------------------------------------------------------------ cards -->
+  <section class="sg-sec" id="cards">
+    <h2 class="sg-h">Cards and tiles</h2>
+    <p class="sg-d">A <b>tile</b> is one number you want read at a glance; a <b>card</b> is one
+      question with its evidence. Cards have a fixed child order —
+      <code>.ds-chead → [.ds-views] → .ds-csub → .ds-plot → .ds-legend → .ds-tv</code> — because
+      <code>DS.notes()</code> finds the description by position. The description
+      <b>starts closed</b> so the page leads with the chart rather than a paragraph.</p>
+    <div class="ds-tiles">
+      <div class="ds-tile"><div class="ds-k">Calving interval</div>
+        <div class="ds-v">403<span class="ds-u">days</span></div><div class="ds-n">n=34 · target 365</div></div>
+      <div class="ds-tile"><div class="ds-k">Conception rate</div>
+        <div class="ds-v">39.3<span class="ds-u">%</span></div><div class="ds-n">22/56 · target 55</div></div>
+      <div class="ds-tile"><div class="ds-k">Heat detection</div>
+        <div class="ds-v">30.0<span class="ds-u">%</span></div><div class="ds-n">n=316 · target 75</div></div>
+      <div class="ds-tile"><div class="ds-k">Days in milk</div>
+        <div class="ds-v">190<span class="ds-u">days</span></div><div class="ds-n">n=51 · target 160</div></div>
+    </div>
+    <div class="ds-grid" id="carddemo"></div>
+  </section>
+
+  <!-- ------------------------------------------------------------ charts -->
+  <section class="sg-sec" id="charts">
+    <h2 class="sg-h">Charts</h2>
+    <p class="sg-d">Inline SVG, no library. Geometry is in viewBox units and the SVG is scaled by
+      CSS, so pointer coordinates are divided by <code>rendered / DS.W</code> before hit-testing.
+      Decorative marks are <code>pointer-events:none</code> and <b>one overlay owns hovering</b>,
+      which is what makes a thin line or a 4px dot easy to hover.</p>
+    <div class="ds-grid" id="chartdemo"></div>
+    <div class="sg-code">DS.line(host, cats, [{name:'Services', color:'var(--ds-s1)', data:[…]}], {dec:0})
+DS.stack(host, cats, series, {totalFmt:(i,t)=&gt;DS.pct(t, 58), pctOf:58, hideZero:true})
+DS.histogram(host, values, {bin:30, refs:[{v:65, label:'65 d target'}]})
+DS.scatter(host, points, {xref:65, yref:110, click:p =&gt; open(p)})</div>
+  </section>
+
+  <!-- ------------------------------------------------------------ data -->
+  <section class="sg-sec" id="data">
+    <h2 class="sg-h">Data display</h2>
+    <p class="sg-d">Tables get sticky headers, tabular numerals and blanks that sink to the bottom
+      when sorted — a missing value is unknown, not smallest. Badges state a verdict; callouts
+      state something the reader must know <em>before</em> quoting a number.</p>
+    <div class="ds-grid">
+      <div class="ds-card">
+        <div class="ds-chead"><h2 class="ds-ctitle">Table</h2></div>
+        <div class="ds-tvopen" id="tabledemo"></div>
+      </div>
+      <div class="ds-card">
+        <div class="ds-chead"><h2 class="ds-ctitle">Badges, callouts, bars</h2></div>
+        <p style="margin:0 0 14px">
+          <span class="ds-badge ds-ok">ok</span>
+          <span class="ds-badge ds-warn">borderline</span>
+          <span class="ds-badge ds-bad">over target</span>
+          <span class="ds-badge ds-na">not measured</span>
+        </p>
+        <div class="ds-callout ds-danger"><b>Read before quoting.</b> Dystocia reads 0% because
+          the source has no calving-ease field — that is a recording artefact, not a result.</div>
+        <div class="ds-bars" id="barsdemo"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ------------------------------------------------------------ brand -->
+  <section class="sg-sec" id="brand">
+    <h2 class="sg-h">Brand — header mark and footer notice</h2>
+    <p class="sg-d">The mark is <b>two files, the same drawing on a filled panel, inverted</b>.
+      Both are in the markup; the stylesheet hides one. They are named for <em>where they are
+      shown</em>, not for what they contain — <code>brand-onlight.png</code> is the
+      <b>black</b> panel, because a black panel is what contrasts with a light page.</p>
+    <p class="sg-d">The swap is CSS, never JavaScript. A script runs after first paint, so the
+      reader would see a flash of the wrong icon on every load. <b>Toggle the theme above and
+      watch the mark invert</b> — no script is involved.</p>
+    <div class="sg-demo">
+      <div class="ds-brandrow" style="margin-bottom:18px">
+        <a class="ds-logolink" href="#brand" aria-label="Brand mark">
+          <img class="ds-brand ds-brand-onlight" alt="" src="assets/brand-onlight.png">
+          <img class="ds-brand ds-brand-ondark"  alt="" src="assets/brand-ondark.png">
+        </a>
+        <div>
+          <h1 class="ds-title" style="font-size:var(--ds-fs-lg)">Page title goes here</h1>
+          <p class="ds-sub"><b>Section</b> — one line saying what this page is</p>
+        </div>
+      </div>
+      <div class="sg-code">&lt;div class="ds-brandrow"&gt;
+  &lt;a class="ds-logolink" href="…" aria-label="View on GitHub"&gt;
+    &lt;img class="ds-brand ds-brand-onlight" alt="" src="assets/brand-onlight.png"&gt;
+    &lt;img class="ds-brand ds-brand-ondark"  alt="" src="assets/brand-ondark.png"&gt;
+  &lt;/a&gt;
+  &lt;div&gt;&lt;h1 class="ds-title"&gt;…&lt;/h1&gt;&lt;p class="ds-sub"&gt;…&lt;/p&gt;&lt;/div&gt;
+&lt;/div&gt;</div>
+    </div>
+
+    <p class="sg-d" style="margin-top:22px">The footer sets a rights or provenance notice beside
+      the mark. It is <b>serif and small on purpose</b>: it should read as a footnote rather than
+      as part of the analysis, while still being justified and leaded well enough to actually be
+      read. On a phone it stacks and stops being justified — justified 10.5px text in a narrow
+      column produces rivers of white space.</p>
+    <div class="ds-foot" style="margin-top:0">
+      <div class="ds-notice">
+        <div class="ds-noticetext">
+          <p class="ds-noticehead">For academic discussion and presentation only — not for sale or redistribution</p>
+          <p>Replace this with your own notice. The data presented here were collected by the
+          staff of the institution named, in the course of their routine work, and are shared for
+          teaching, discussion and conference presentation. Any figure quoted elsewhere should
+          carry its n and its date.</p>
+        </div>
+        <div class="ds-footbrand">
+          <a class="ds-logolink" href="#brand" aria-label="Brand mark">
+            <img class="ds-brand ds-brand-onlight" alt="" src="assets/brand-onlight.png">
+            <img class="ds-brand ds-brand-ondark"  alt="" src="assets/brand-ondark.png">
+          </a>
+          <span class="ds-byline">your-name</span>
+        </div>
+      </div>
+    </div>
+
+    <p class="sg-d" style="margin-top:20px"><b>For a single-file page</b>, swap the
+      <code>src</code> for the base64 strings in <code>assets/brand.base64.json</code> — the same
+      images at 18 KB each — plus the favicon. That is how the dashboards stay one portable
+      <code>.html</code> with no external requests.</p>
+    <div class="sg-code">&lt;link rel="icon" type="image/png" sizes="32x32" href="data:image/png;base64,…"&gt;
+&lt;img class="ds-brand ds-brand-onlight" alt="" src="data:image/png;base64,…"&gt;</div>
+  </section>
+
+  <!-- ------------------------------------------------------------ rules -->
+  <section class="sg-sec" id="rules">
+    <h2 class="sg-h">Rules the system encodes</h2>
+    <p class="sg-d">These are the conventions the components assume. They are what make a page
+      built from this readable by someone who did not build it.</p>
+    <div class="ds-demo sg-demo">
+      <ol class="sg-d" style="max-width:74ch;padding-left:1.1em">
+        <li><b>Every number carries its n.</b> Tiles have a <code>.ds-n</code> line for exactly
+          this. A rate with no denominator is not a finding.</li>
+        <li><b>Flag any denominator under 20</b> rather than printing a confident percentage.
+          Show the count instead: <code>3 of 15</code>, not <code>20%</code>.</li>
+        <li><b>Colour means one thing per chart.</b> If bars are stacked by category A, the legend
+          shows category A. A legend describing a different encoding is worse than none.</li>
+        <li><b>Percentages need a stated denominator.</b> <code>DS.stack</code> takes
+          <code>pctOf</code> because a bar carried by one series otherwise reports 100% of itself.</li>
+        <li><b>Contradictions are content.</b> When two sources disagree, show both and mark the
+          conflict — do not quietly pick one.</li>
+        <li><b>The reader's theme wins.</b> Never define a colour only inside a media query; the
+          light value must always exist on bare <code>:root</code>.</li>
+        <li><b>Motion is optional.</b> Everything animated sits inside
+          <code>@media (prefers-reduced-motion: no-preference)</code>.</li>
+      </ol>
+    </div>
+  </section>
+
+  <div class="ds-foot">
+    <div class="ds-notice">
+      <div class="ds-noticetext">
+        <p class="ds-noticehead">DS — extracted from the CU Dairy dashboards</p>
+        <p>Copy <b>ds.css</b>, <b>ds.js</b> and <b>assets/</b> into any project. No build step, no
+        dependencies, no external requests. This page is itself built from those files, so
+        anything visible here can be copied from its source.</p>
+      </div>
+      <div class="ds-footbrand">
+        <a class="ds-logolink" href="https://github.com/sirawit-leo" target="_blank" rel="noopener noreferrer"
+           aria-label="View on GitHub">
+          <img class="ds-brand ds-brand-onlight" alt="" src="assets/brand-onlight.png">
+          <img class="ds-brand ds-brand-ondark"  alt="" src="assets/brand-ondark.png">
+        </a>
+        <span class="ds-byline">sirawit-leo</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="ds.js"></script>
+<script>
+/* ---- everything below is the style guide demonstrating the system ---- */
+DS.theme.bind(document.getElementById('theme'));
+
+/* tokens ------------------------------------------------------------- */
+const TOKENS = [
+  ['--ds-page','page behind everything'], ['--ds-surface','cards, tiles'],
+  ['--ds-chip-bg','controls at rest'], ['--ds-text','primary text'],
+  ['--ds-text-2','secondary text'], ['--ds-muted','captions, axes'],
+  ['--ds-grid','gridlines'], ['--ds-axis','axis lines'],
+  ['--ds-s1','series 1'], ['--ds-s2','series 2'], ['--ds-s3','series 3'],
+  ['--ds-s4','series 4'], ['--ds-s5','series 5'], ['--ds-s6','series 6'],
+  ['--ds-good','good'], ['--ds-warning','warning'], ['--ds-serious','serious'],
+  ['--ds-critical','critical'], ['--ds-neutral','neutral'], ['--ds-accent','selected'],
+];
+document.getElementById('swatches').innerHTML = TOKENS.map(([v, d]) =>
+  `<div class="sg-sw"><i style="background:var(${v})"></i><span>${v}<br>${d}</span></div>`).join('');
+
+/* tabs --------------------------------------------------------------- */
+const TABNOTES = {
+  a: 'Tabs group cards that answer <b>different questions</b>. Filters stay above the tabs so switching one never silently changes what is being measured.',
+  b: 'Each tab gets one sentence saying what it is for, and what it is <b>not</b> for.',
+  c: 'Keep the count small. Four is comfortable; eight is a menu.',
+};
+let tab = 'a';
+function paintTabs() {
+  DS.tabs(document.getElementById('tabdemo'),
+    [['a','Overview'],['b','Detail'],['c','Records']], tab, k => { tab = k; paintTabs(); });
+  document.getElementById('tabnote').innerHTML = TABNOTES[tab];
+}
+paintTabs();
+
+/* chips -------------------------------------------------------------- */
+document.getElementById('chipdemo').addEventListener('click', e => {
+  const b = e.target.closest('.ds-chip'); if (!b) return;
+  b.setAttribute('aria-pressed', b.getAttribute('aria-pressed') === 'true' ? 'false' : 'true');
+});
+
+/* cards -------------------------------------------------------------- */
+const cardHost = document.getElementById('carddemo');
+let expanded = false, view = 0;
+function paintCards() {
+  cardHost.innerHTML = '';
+  const c = DS.card({
+    title: 'A card with every part',
+    note: 'This is <code>.ds-csub</code> — the card\'s own description. It starts closed; the ⓘ Notes button is grafted on by <code>DS.notes()</code>. Put the caveats here, not in the title.',
+    legend: DS.swatch('var(--ds-s1)', 'series one') + DS.swatch('var(--ds-s2)', 'series two'),
+    views: ['Counts', 'Share'],
+    view,
+    zoom: true,
+    expanded,
+    onZoom: () => { expanded = !expanded; paintCards(); },
+    onView: i => { view = i; paintCards(); },
+  });
+  cardHost.appendChild(c);
+  const cats = ['Jan','Feb','Mar','Apr','May','Jun'];
+  const raw = [12, 19, 14, 22, 17, 25];
+  const data = view === 0 ? raw : raw.map(v => +(100 * v / raw.reduce((a,b)=>a+b,0)).toFixed(1));
+  DS.bar(c.querySelector('.ds-plot'), cats, data, {
+    dec: view === 0 ? 0 : 1, color: 'var(--ds-s1)',
+    refs: view === 0 ? [{ v: 20, label: 'target 20' }] : [],
+  });
+  c.querySelector('.ds-tv').innerHTML = DS.table(['Month', view === 0 ? 'Count' : 'Share %'],
+    cats.map((m, i) => [m, data[i]]));
+  DS.notes(cardHost);
+}
+paintCards();
+
+/* charts ------------------------------------------------------------- */
+const chartHost = document.getElementById('chartdemo');
+const MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug'];
+function chartCard(title, note, legend, draw) {
+  const c = DS.card({ title, note, legend, table: false });
+  chartHost.appendChild(c);
+  draw(c.querySelector('.ds-plot'));
+  return c;
+}
+chartCard('Line — multi-series with a tracking guide',
+  'Hover anywhere: the guide snaps to the nearest month and the tooltip lists every visible series at once. Click a legend entry to hide a series.',
+  DS.legend('demo', [{color:'var(--ds-s1)',name:'Services'},{color:'var(--ds-s2)',name:'Conceptions'}]),
+  host => DS.line(host, MONTHS, [
+    { name: 'Services', color: 'var(--ds-s1)', data: [21,26,19,30,24,28,22,17] },
+    { name: 'Conceptions', color: 'var(--ds-s2)', data: [8,11,7,13,9,12,10,6] },
+  ], { dec: 0, hidden: DS.hiddenOf('demo') }));
+
+chartCard('Stacked — with a stated denominator',
+  'Each bar is labelled with its share of a population you supply, not of its own column. Hover for the breakdown.',
+  DS.swatch('var(--ds-s1)','RF') + DS.swatch('var(--ds-s2)','LF') + DS.swatch('var(--ds-s3)','RH') + DS.swatch('var(--ds-s4)','LH'),
+  host => {
+    const total = 58;
+    DS.stack(host, ['N','S','R','VR'], [
+      { name: 'RF', color: 'var(--ds-s1)', data: [0,11,3,0] },
+      { name: 'LF', color: 'var(--ds-s2)', data: [0,13,2,0] },
+      { name: 'RH', color: 'var(--ds-s3)', data: [0,13,1,1] },
+      { name: 'LH', color: 'var(--ds-s4)', data: [0,13,1,0] },
+    ], { totalFmt: (i, t) => DS.pct(t, total), pctOf: total, hideZero: true });
+  });
+
+chartCard('Histogram — distribution, share and cumulative',
+  'Bars are labelled with their share; the dashed curve is the running total on a right-hand 0–100% axis, so you can read straight off it how much of the population is past the target. Median and mean are drawn where they fall.',
+  DS.swatch('var(--ds-s1)','within target') + DS.swatch('var(--ds-critical)','past target') + DS.swatch('var(--ds-s2)','cumulative %'),
+  host => DS.histogram(host,
+    [31,38,42,45,47,51,52,55,58,60,63,66,68,71,74,78,82,88,95,101,110,124,138,152,171],
+    { bin: 30, refs: [{ v: 65, label: '65 target' }], suffix: 'days' }));
+
+chartCard('Scatter — one dot per record, click to open',
+  'Nearest-point hit test within 9 viewBox units with a ring as the affordance. Reference lines split the plot into quadrants so the problem group is a place, not a calculation.',
+  DS.swatch('var(--ds-s1)','current') + DS.swatch('var(--ds-muted)','left') + DS.swatch('var(--ds-critical)','targets'),
+  host => DS.scatter(host, [
+    {x:41,y:88,label:'A1'},{x:52,y:96,label:'A2'},{x:60,y:104,label:'A3'},{x:66,y:118,label:'A4'},
+    {x:72,y:131,label:'A5'},{x:78,y:96,label:'A6'},{x:84,y:142,label:'A7'},{x:91,y:158,label:'A8'},
+    {x:58,y:76,label:'A9'},{x:47,y:112,label:'B1'},{x:103,y:171,label:'B2',color:'var(--ds-muted)'},
+    {x:112,y:149,label:'B3',color:'var(--ds-muted)'},
+  ], {
+    xref: 65, xrefLabel: '65', yref: 110, yrefLabel: '110',
+    xlab: 'days to first service', ylab: 'days to conception',
+    tip: p => DS.tip.head('Record ' + p.label) + DS.tip.row('first service', p.x + ' d') + DS.tip.row('conception', p.y + ' d'),
+    click: p => alert('clicked ' + p.label),
+  }));
+
+DS.notes(chartHost);
+DS.onLegendToggle(() => { chartHost.innerHTML = ''; location.reload(); });
+
+/* table -------------------------------------------------------------- */
+const ROWS = [
+  ['6404', 3, 111, 39.3], ['6405', 3, 275, null], ['6406', 3, 78, 52.1],
+  ['6413', 2, 190, 28.4], ['6502', 1, 143, 61.0],
+];
+let sortKey = 0, sortDir = 1;
+function paintTable() {
+  const sorted = DS.sortRows(ROWS, r => r[sortKey], sortDir);
+  const host = document.getElementById('tabledemo');
+  host.innerHTML = DS.table(['Cow', 'Lactation', 'DIM', 'Rate %'],
+    sorted.map(r => [`<b>${r[0]}</b>`, r[1], r[2], r[3] == null ? null : DS.fmt(r[3], 1)]),
+    { sortable: true, sortKey, sortDir });
+  host.querySelectorAll('th.ds-sortable').forEach(th => th.addEventListener('click', () => {
+    const i = +th.dataset.dsCol;
+    if (i === sortKey) sortDir = -sortDir; else { sortKey = i; sortDir = 1; }
+    paintTable();
+  }));
+}
+paintTable();
+
+/* horizontal bars ---------------------------------------------------- */
+const BARS = [
+  ['Retained placenta', 12.7, 10], ['Endometritis', 41.3, 10],
+  ['Abortion', 11.1, 5], ['Ovarian cyst', 4.8, 10],
+];
+const maxBar = Math.max(...BARS.map(b => Math.max(b[1], b[2]))) * 1.15;
+document.getElementById('barsdemo').innerHTML = BARS.map(([n, v, bm]) => `
+  <div class="ds-barrow">
+    <div>${n}</div>
+    <div class="ds-btrack">
+      <div class="ds-bfill" style="width:${v / maxBar * 100}%;background:${v > bm ? 'var(--ds-critical)' : 'var(--ds-good)'}"></div>
+      <div class="ds-bmark" style="left:${bm / maxBar * 100}%"></div>
+    </div>
+    <div class="ds-bval">${v}%</div>
+  </div>`).join('');
+</script>
+</body>
+</html>

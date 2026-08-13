@@ -1,0 +1,466 @@
+/* ============================================================================
+   DS — a small design system for self-contained analytical HTML pages
+   ----------------------------------------------------------------------------
+   Extracted from the CU Dairy dashboards. No build step, no dependencies, no
+   external requests: one <link> and you have the whole thing.
+
+   Everything is namespaced `ds-` so it can be dropped into a project that
+   already has a stylesheet without colliding.
+
+   THEMING is three-state, and the order of these blocks matters:
+     1. :root                                  -> the light palette, always defined
+     2. @media (prefers-color-scheme: dark)
+          :root:not([data-theme="light"])      -> dark, unless the user forced light
+     3. :root[data-theme="dark"]               -> dark, forced, beats the media query
+
+   The consequence worth knowing: a colour must ALWAYS have a value on bare
+   :root. Defining one only inside a media query leaves it undefined for anyone
+   whose system is set the other way.
+   ========================================================================= */
+
+:root {
+  color-scheme: light;
+
+  /* -- surfaces ------------------------------------------------------------ */
+  --ds-page:        #f9f9f7;   /* the page behind everything */
+  --ds-surface:     #fcfcfb;   /* cards, tiles, anything raised */
+  --ds-chip-bg:     #ffffff;   /* interactive controls at rest */
+
+  /* -- text ---------------------------------------------------------------- */
+  --ds-text:        #0b0b0b;   /* primary */
+  --ds-text-2:      #52514e;   /* secondary: descriptions, table body */
+  --ds-muted:       #898781;   /* tertiary: axis labels, captions, units */
+
+  /* -- lines --------------------------------------------------------------- */
+  --ds-grid:        #e1e0d9;   /* chart gridlines, table rules */
+  --ds-axis:        #c3c2b7;   /* axis lines, hover borders */
+  --ds-border:      rgba(11,11,11,.10);
+
+  /* -- series: use in this order, they are ordered for contrast ------------- */
+  --ds-s1:          #2a78d6;
+  --ds-s2:          #eb6834;
+  --ds-s3:          #1baf7a;
+  --ds-s4:          #eda100;
+  --ds-s5:          #4a3aa7;
+  --ds-s6:          #b5179e;
+
+  /* -- status: meaning, not decoration ------------------------------------- */
+  --ds-good:        #0ca30c;
+  --ds-warning:     #fab219;
+  --ds-serious:     #ec835a;
+  --ds-critical:    #d03b3b;
+  --ds-neutral:     #898781;
+
+  /* -- accent: the one colour that means "selected" ------------------------ */
+  --ds-accent:      #2a78d6;
+  --ds-accent-ink:  #ffffff;   /* text on top of the accent */
+
+  /* -- elevation ----------------------------------------------------------- */
+  --ds-shadow:      0 1px 2px rgba(11,11,11,.05);
+  --ds-shadow-lift: 0 6px 18px rgba(0,0,0,.09);
+
+  /* -- shape --------------------------------------------------------------- */
+  --ds-r-sm: 6px;
+  --ds-r:    8px;
+  --ds-r-lg: 12px;
+  --ds-r-pill: 999px;
+
+  /* -- space: a 4px scale -------------------------------------------------- */
+  --ds-1: 4px;  --ds-2: 8px;  --ds-3: 12px; --ds-4: 16px;
+  --ds-5: 20px; --ds-6: 24px; --ds-8: 32px; --ds-10: 40px;
+
+  /* -- type ---------------------------------------------------------------- */
+  --ds-font: system-ui, -apple-system, "Segoe UI", "Noto Sans Thai", sans-serif;
+  --ds-fs-xs: 11px; --ds-fs-sm: 12px; --ds-fs-md: 13px;
+  --ds-fs:    14px; --ds-fs-lg: 17px; --ds-fs-xl: 22px; --ds-fs-2xl: 26px;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+    --ds-page:    #0d0d0d;
+    --ds-surface: #1a1a19;
+    --ds-chip-bg: #232322;
+    --ds-text:    #ffffff;
+    --ds-text-2:  #c3c2b7;
+    --ds-muted:   #898781;
+    --ds-grid:    #2c2c2a;
+    --ds-axis:    #383835;
+    --ds-border:  rgba(255,255,255,.10);
+    --ds-s1: #3987e5; --ds-s2: #d95926; --ds-s3: #199e70;
+    --ds-s4: #c98500; --ds-s5: #9085e9; --ds-s6: #e07ad0;
+    /* status colours are lifted on dark so they stay legible against #0d0d0d */
+    --ds-good: #34c759; --ds-warning: #ffcc33; --ds-serious: #ff9f6b; --ds-critical: #ff6b6b;
+    --ds-accent: #3987e5;
+    --ds-shadow: none;
+    --ds-shadow-lift: 0 6px 18px rgba(0,0,0,.5);
+  }
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --ds-page:    #0d0d0d;
+  --ds-surface: #1a1a19;
+  --ds-chip-bg: #232322;
+  --ds-text:    #ffffff;
+  --ds-text-2:  #c3c2b7;
+  --ds-muted:   #898781;
+  --ds-grid:    #2c2c2a;
+  --ds-axis:    #383835;
+  --ds-border:  rgba(255,255,255,.10);
+  --ds-s1: #3987e5; --ds-s2: #d95926; --ds-s3: #199e70;
+  --ds-s4: #c98500; --ds-s5: #9085e9; --ds-s6: #e07ad0;
+  --ds-good: #34c759; --ds-warning: #ffcc33; --ds-serious: #ff9f6b; --ds-critical: #ff6b6b;
+  --ds-accent: #3987e5;
+  --ds-shadow: none;
+  --ds-shadow-lift: 0 6px 18px rgba(0,0,0,.5);
+}
+
+/* ---------------------------------------------------------------- foundation */
+.ds *, .ds *::before, .ds *::after { box-sizing: border-box; }
+
+body.ds-body {
+  margin: 0;
+  background: var(--ds-page);
+  color: var(--ds-text);
+  font-family: var(--ds-font);
+  font-size: var(--ds-fs);
+  line-height: 1.5;
+}
+
+.ds-wrap { max-width: 1400px; margin: 0 auto; padding: var(--ds-6) var(--ds-5) 64px; }
+.ds-narrow { max-width: 820px; }
+
+/* numbers line up in columns only if you ask them to */
+.ds-num { font-variant-numeric: tabular-nums; }
+
+/* ---------------------------------------------------------------- header */
+.ds-header {
+  display: flex; justify-content: space-between; align-items: flex-start;
+  gap: var(--ds-4); flex-wrap: wrap; margin-bottom: var(--ds-5);
+}
+.ds-title { font-size: var(--ds-fs-xl); margin: 0 0 var(--ds-1); font-weight: 650; letter-spacing: -.01em; }
+.ds-sub   { color: var(--ds-text-2); font-size: var(--ds-fs-md); margin: 0; }
+.ds-sub b { color: var(--ds-text); }
+
+/* ---------------------------------------------------------------- brand */
+/* Two image files, the same drawing on a filled panel, inverted:
+     assets/brand-onlight.png  BLACK panel, white ink -> shown on a LIGHT page
+     assets/brand-ondark.png   WHITE panel, black ink -> shown on a DARK page
+   Named for WHERE THEY ARE SHOWN, not for what they contain, because "the light
+   icon" is ambiguous and people reliably guess it the wrong way round.
+
+   Show whichever panel CONTRASTS with the page, so the mark reads as a panel
+   rather than dissolving into the background.
+
+   This is done in CSS and never in JS. A script would run after first paint, so
+   the reader would see a flash of the wrong icon on every load. Both images are
+   in the markup; the stylesheet hides one. */
+.ds-brandrow { display: flex; align-items: flex-start; gap: 13px; min-width: 0; }
+.ds-brand { height: 46px; width: auto; flex: none; margin-top: 1px; }
+.ds-brand-ondark { display: none; }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .ds-brand-onlight { display: none; }
+  :root:not([data-theme="light"]) .ds-brand-ondark  { display: block; }
+}
+:root[data-theme="dark"]  .ds-brand-onlight { display: none; }
+:root[data-theme="dark"]  .ds-brand-ondark  { display: block; }
+:root[data-theme="light"] .ds-brand-onlight { display: block; }
+:root[data-theme="light"] .ds-brand-ondark  { display: none; }
+
+.ds-logolink { display: inline-flex; text-decoration: none; border-radius: var(--ds-r-sm); flex: none; }
+.ds-logolink:hover { opacity: .82; }
+.ds-logolink:focus-visible { outline: 2px solid var(--ds-accent); outline-offset: 3px; }
+
+/* ---------------------------------------------------------------- nav */
+.ds-nav { display: flex; gap: 5px; align-items: center; flex-wrap: wrap; margin: 0 0 var(--ds-5); }
+.ds-navlink {
+  text-decoration: none; color: var(--ds-text-2); font: inherit; font-size: var(--ds-fs-md);
+  padding: 7px 15px; border-radius: var(--ds-r-pill); border: 1px solid var(--ds-border);
+  background: var(--ds-chip-bg); white-space: nowrap;
+}
+.ds-navlink:hover { border-color: var(--ds-axis); color: var(--ds-text); }
+.ds-navlink[aria-current="page"] {
+  background: var(--ds-accent); border-color: var(--ds-accent);
+  color: var(--ds-accent-ink); font-weight: 650;
+}
+
+/* ---------------------------------------------------------------- buttons */
+.ds-btn {
+  background: var(--ds-chip-bg); border: 1px solid var(--ds-border); color: var(--ds-text);
+  border-radius: var(--ds-r); padding: 7px 12px; font: inherit; font-size: var(--ds-fs-md);
+  cursor: pointer;
+}
+.ds-btn:hover { border-color: var(--ds-axis); }
+
+/* chip = a toggle. aria-pressed carries the state, never a class. */
+.ds-chips { display: flex; gap: 6px; flex-wrap: wrap; }
+.ds-chip {
+  background: var(--ds-chip-bg); border: 1px solid var(--ds-border);
+  border-radius: var(--ds-r-pill); padding: 5px 13px; font: inherit; font-size: var(--ds-fs-md);
+  cursor: pointer; color: var(--ds-text-2); min-height: 30px; user-select: none;
+}
+.ds-chip:hover { border-color: var(--ds-axis); }
+.ds-chip[aria-pressed="true"] {
+  background: var(--ds-accent); border-color: var(--ds-accent);
+  color: var(--ds-accent-ink); font-weight: 600;
+}
+
+/* vchip = a smaller chip that switches what a single card is showing */
+.ds-views { display: flex; gap: 5px; flex-wrap: wrap; margin: 0 0 11px; }
+.ds-vchip {
+  background: var(--ds-chip-bg); border: 1px solid var(--ds-border);
+  border-radius: var(--ds-r-pill); padding: 3px 11px; font: inherit; font-size: var(--ds-fs-sm);
+  cursor: pointer; color: var(--ds-text-2); white-space: nowrap; user-select: none;
+}
+.ds-vchip:hover { border-color: var(--ds-axis); color: var(--ds-text); }
+.ds-vchip[aria-pressed="true"] {
+  background: var(--ds-accent); border-color: var(--ds-accent);
+  color: var(--ds-accent-ink); font-weight: 600;
+}
+
+:where(.ds-btn, .ds-chip, .ds-vchip, .ds-navlink, .ds-tab, .ds-tgl):focus-visible {
+  outline: 2px solid var(--ds-accent); outline-offset: 2px;
+}
+
+/* ---------------------------------------------------------------- filters */
+.ds-filters {
+  background: var(--ds-surface); border: 1px solid var(--ds-border); border-radius: var(--ds-r-lg);
+  padding: 14px var(--ds-4); margin-bottom: var(--ds-5); box-shadow: var(--ds-shadow);
+  display: flex; gap: 22px; align-items: flex-start; flex-wrap: wrap;
+}
+.ds-fgroup { display: flex; flex-direction: column; gap: 7px; }
+.ds-flabel {
+  font-size: var(--ds-fs-xs); font-weight: 650; letter-spacing: .05em;
+  text-transform: uppercase; color: var(--ds-muted);
+}
+
+/* ---------------------------------------------------------------- tabs */
+.ds-tabs {
+  display: flex; gap: var(--ds-1); flex-wrap: wrap; margin-bottom: var(--ds-4);
+  border-bottom: 1px solid var(--ds-border);
+}
+.ds-tab {
+  background: none; border: 0; border-bottom: 2px solid transparent; color: var(--ds-text-2);
+  font: inherit; font-size: var(--ds-fs); padding: 9px 15px 10px; cursor: pointer;
+  margin-bottom: -1px; border-radius: var(--ds-r) var(--ds-r) 0 0; white-space: nowrap;
+}
+.ds-tab:hover { color: var(--ds-text); background: color-mix(in srgb, var(--ds-text) 4%, transparent); }
+.ds-tab[aria-selected="true"] { color: var(--ds-accent); border-bottom-color: var(--ds-accent); font-weight: 650; }
+.ds-secthead { margin: 0 0 var(--ds-4); font-size: 12.5px; color: var(--ds-text-2); line-height: 1.65; }
+.ds-secthead b { color: var(--ds-text); }
+
+/* ---------------------------------------------------------------- tiles */
+.ds-tiles {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(168px, 1fr));
+  gap: var(--ds-3); margin-bottom: var(--ds-5);
+}
+.ds-tile {
+  background: var(--ds-surface); border: 1px solid var(--ds-border);
+  border-radius: var(--ds-r-lg); padding: 14px var(--ds-4); box-shadow: var(--ds-shadow);
+}
+.ds-tile .ds-k { font-size: var(--ds-fs-sm); color: var(--ds-text-2); margin-bottom: 6px; }
+.ds-tile .ds-v {
+  font-size: var(--ds-fs-2xl); font-weight: 650; letter-spacing: -.02em; line-height: 1.15;
+  font-variant-numeric: tabular-nums;
+}
+.ds-tile .ds-u { font-size: var(--ds-fs-sm); color: var(--ds-muted); font-weight: 400; margin-left: 3px; }
+.ds-tile .ds-n { font-size: var(--ds-fs-xs); color: var(--ds-muted); margin-top: var(--ds-1); }
+
+/* a compact run of headline numbers, without the boxes */
+.ds-scale { display: flex; gap: 22px; flex-wrap: wrap; padding-top: 18px; border-top: 1px solid var(--ds-border); }
+.ds-scale div { font-size: 12.5px; color: var(--ds-muted); line-height: 1.45; }
+.ds-scale b {
+  display: block; font-size: 21px; font-weight: 650; color: var(--ds-text);
+  letter-spacing: -.02em; font-variant-numeric: tabular-nums;
+}
+
+/* ---------------------------------------------------------------- cards */
+.ds-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(420px, 1fr)); gap: var(--ds-4); }
+.ds-card {
+  background: var(--ds-surface); border: 1px solid var(--ds-border); border-radius: var(--ds-r-lg);
+  padding: var(--ds-4) 18px 18px; box-shadow: var(--ds-shadow); min-width: 0;
+}
+.ds-card.ds-wide, .ds-card.ds-expanded { grid-column: 1 / -1; }
+.ds-chead { display: flex; align-items: flex-start; gap: var(--ds-3); margin-bottom: var(--ds-2); }
+.ds-ctitle { font-size: var(--ds-fs-lg); margin: 0; font-weight: 650; letter-spacing: -.01em; line-height: 1.25; }
+.ds-cbtns { display: flex; gap: 5px; margin-left: auto; flex: none; }
+.ds-tgl {
+  background: var(--ds-chip-bg); border: 1px solid var(--ds-border); color: var(--ds-text-2);
+  border-radius: var(--ds-r); padding: 4px 10px; font: inherit; font-size: var(--ds-fs-sm);
+  cursor: pointer; white-space: nowrap;
+}
+.ds-tgl:hover { border-color: var(--ds-axis); color: var(--ds-text); }
+/* the card's own description: starts closed, opened by the Notes button */
+.ds-csub { margin: 0 0 var(--ds-3); font-size: 12.5px; color: var(--ds-text-2); line-height: 1.7; }
+.ds-csub b { color: var(--ds-text); }
+.ds-plot { min-height: 40px; }
+.ds-plot svg { display: block; width: 100%; height: auto; overflow: visible; }
+
+/* legend: swatch + name. .ds-togglable makes a series clickable. */
+.ds-legend {
+  display: flex; gap: var(--ds-4); flex-wrap: wrap; font-size: var(--ds-fs-sm);
+  color: var(--ds-text-2); margin-top: 9px; align-items: center;
+}
+.ds-sw { width: 11px; height: 11px; border-radius: 3px; display: inline-block; margin-right: 5px; vertical-align: -1px; }
+.ds-lgi.ds-togglable { cursor: pointer; user-select: none; }
+.ds-lgi.ds-togglable:hover { color: var(--ds-text); }
+
+/* the card's table view, revealed by the Table button */
+.ds-tv { display: none; max-height: 320px; overflow: auto; margin-top: var(--ds-2); }
+.ds-card.ds-table-on .ds-tv { display: block; }
+.ds-card.ds-table-on .ds-plot, .ds-card.ds-table-on .ds-legend { display: none; }
+.ds-card.ds-expanded .ds-tv { max-height: none; }
+/* a table that is the content, not an alternate view of a chart */
+.ds-tvopen { max-height: 420px; overflow: auto; margin-top: var(--ds-2); }
+
+/* ---------------------------------------------------------------- tables */
+.ds-table { border-collapse: collapse; width: 100%; font-size: var(--ds-fs-sm); font-variant-numeric: tabular-nums; }
+.ds-table th, .ds-table td { padding: 7px 9px; text-align: left; border-bottom: 1px solid var(--ds-grid); }
+.ds-table thead th {
+  position: sticky; top: 0; background: var(--ds-surface); z-index: 1;
+  font-size: var(--ds-fs-xs); text-transform: uppercase; letter-spacing: .05em;
+  color: var(--ds-muted); font-weight: 650; white-space: nowrap;
+}
+.ds-table tbody tr:hover { background: color-mix(in srgb, var(--ds-text) 5%, transparent); }
+.ds-table th.ds-sortable { cursor: pointer; user-select: none; }
+.ds-table th.ds-sortable:hover { color: var(--ds-text); }
+.ds-table td.ds-r, .ds-table th.ds-r { text-align: right; }
+
+/* ---------------------------------------------------------------- search */
+.ds-tools { display: flex; gap: var(--ds-3); align-items: center; flex-wrap: wrap; margin: 0 0 var(--ds-3); }
+.ds-search {
+  flex: 1; min-width: 180px; max-width: 340px; background: var(--ds-chip-bg);
+  border: 1px solid var(--ds-border); border-radius: var(--ds-r); padding: 7px 11px;
+  font: inherit; font-size: var(--ds-fs-md); color: var(--ds-text);
+}
+.ds-search:focus { outline: 2px solid var(--ds-accent); outline-offset: 1px; }
+
+/* ---------------------------------------------------------------- tooltip */
+/* One singleton, position:fixed, pointer-events:none. Drive OPACITY, not display —
+   display:none defeats the transition and, if you forget the opacity, the tooltip
+   is invisible while every other symptom looks fine. */
+.ds-tip {
+  position: fixed; pointer-events: none; opacity: 0; transition: opacity .1s;
+  background: var(--ds-surface); border: 1px solid var(--ds-axis); border-radius: var(--ds-r);
+  padding: var(--ds-2) 11px; font-size: var(--ds-fs-sm); box-shadow: 0 4px 14px rgba(0,0,0,.16);
+  z-index: 50; max-width: 280px; color: var(--ds-text);
+}
+.ds-tip b { display: block; margin-bottom: 5px; }
+.ds-tip .ds-row { display: flex; justify-content: space-between; gap: 14px; font-variant-numeric: tabular-nums; }
+
+/* ---------------------------------------------------------------- status */
+.ds-badge {
+  display: inline-block; padding: 2px 9px; border-radius: var(--ds-r-pill);
+  font-size: 11.5px; font-weight: 650;
+}
+.ds-badge.ds-ok       { background: color-mix(in srgb, var(--ds-good) 16%, transparent);     color: var(--ds-good); }
+.ds-badge.ds-warn     { background: color-mix(in srgb, var(--ds-warning) 20%, transparent);  color: var(--ds-warning); }
+.ds-badge.ds-bad      { background: color-mix(in srgb, var(--ds-critical) 16%, transparent); color: var(--ds-critical); }
+.ds-badge.ds-na       { background: color-mix(in srgb, var(--ds-neutral) 16%, transparent);  color: var(--ds-neutral); }
+.ds-warntext { color: var(--ds-critical); font-weight: 600; }
+.ds-mutedtext { color: var(--ds-muted); font-size: var(--ds-fs-sm); }
+
+/* a callout for the thing a reader must know before quoting a number */
+.ds-callout {
+  background: var(--ds-surface); border: 1px solid var(--ds-border);
+  border-left: 4px solid var(--ds-accent); border-radius: var(--ds-r-lg);
+  padding: 13px var(--ds-4); margin-bottom: 18px; font-size: 12.5px; line-height: 1.7;
+  color: var(--ds-text-2);
+}
+.ds-callout b { color: var(--ds-text); }
+.ds-callout.ds-danger { border-left-color: var(--ds-critical); }
+.ds-callout.ds-ok     { border-left-color: var(--ds-good); }
+.ds-callout code {
+  font-size: var(--ds-fs-sm); background: var(--ds-chip-bg); border: 1px solid var(--ds-border);
+  border-radius: var(--ds-r-sm); padding: 1px 5px;
+}
+
+.ds-empty { padding: 26px; text-align: center; color: var(--ds-muted); font-size: var(--ds-fs-md); }
+
+/* ---------------------------------------------------------------- h-bars */
+/* For ranked categories, where a horizontal bar reads better than a chart. */
+.ds-bars { display: flex; flex-direction: column; gap: 9px; }
+.ds-barrow {
+  display: grid; grid-template-columns: 150px 1fr 96px; gap: 11px;
+  align-items: center; font-size: var(--ds-fs-md);
+}
+.ds-barrow.ds-clickable { cursor: pointer; }
+.ds-barrow.ds-clickable:hover .ds-btrack { outline: 1px solid var(--ds-axis); }
+.ds-btrack {
+  background: color-mix(in srgb, var(--ds-text) 7%, transparent);
+  border-radius: 5px; height: 20px; position: relative;
+}
+.ds-bfill { height: 100%; border-radius: 5px; }
+.ds-bmark { position: absolute; top: -3px; bottom: -3px; width: 2px; background: var(--ds-muted); }
+.ds-bval { text-align: right; font-variant-numeric: tabular-nums; font-weight: 600; }
+
+/* ---------------------------------------------------------------- footer */
+/* A rights/provenance notice set beside the mark. The notice is deliberately
+   SERIF and small: it reads as a legal footnote rather than as content, which is
+   what stops people skimming it as part of the analysis — while still being
+   justified and properly leaded so it can actually be read. */
+.ds-foot { margin-top: 28px; font-size: var(--ds-fs-sm); color: var(--ds-muted); line-height: 1.7; }
+.ds-notice {
+  display: flex; gap: 22px; align-items: center; justify-content: space-between;
+  border: 1px solid var(--ds-border); border-radius: var(--ds-r-lg);
+  padding: 14px 18px; background: var(--ds-surface);
+}
+.ds-noticetext {
+  min-width: 0; flex: 1 1 auto; margin: 0;
+  font-family: "Times New Roman", Times, Georgia, "Noto Serif Thai", serif;
+  font-size: 10.5px; line-height: 1.45; text-align: justify; hyphens: auto;
+}
+.ds-noticetext p { margin: 0 0 4px; }
+.ds-noticehead {
+  display: block; margin-bottom: var(--ds-1); font-weight: 700; font-size: 11.5px;
+  letter-spacing: .01em; color: var(--ds-text);
+}
+.ds-notice b { color: var(--ds-text-2); }
+.ds-footbrand { flex: none; display: flex; flex-direction: column; align-items: center; gap: 5px; }
+.ds-byline { font-size: var(--ds-fs-xs); color: var(--ds-text-2); letter-spacing: .02em; }
+
+/* ---------------------------------------------------------------- motion */
+@media (prefers-reduced-motion: no-preference) {
+  .ds-card, .ds-btn, .ds-chip, .ds-vchip, .ds-navlink { transition: border-color .15s, background .15s, color .15s; }
+  .ds-plot rect.ds-bar { transition: y .35s cubic-bezier(.22,1,.36,1), height .35s cubic-bezier(.22,1,.36,1); }
+  .ds-bfill { transition: width .45s cubic-bezier(.22,1,.36,1); }
+  .ds-lift:hover { transform: translateY(-2px); box-shadow: var(--ds-shadow-lift); }
+}
+
+/* ---------------------------------------------------------------- mobile */
+@media (max-width: 640px) {
+  .ds-wrap { padding: 14px var(--ds-3) 48px; }
+  .ds-grid { grid-template-columns: 1fr; gap: var(--ds-3); }
+  .ds-card { padding: 13px 13px 15px; border-radius: var(--ds-r-lg); }
+  .ds-title { font-size: var(--ds-fs-lg); }
+  .ds-tiles { grid-template-columns: repeat(auto-fit, minmax(132px, 1fr)); gap: var(--ds-2); }
+  .ds-tile .ds-v { font-size: var(--ds-fs-xl); }
+  .ds-tab { padding: 9px 11px; font-size: var(--ds-fs-md); }
+  .ds-navlink { padding: 6px 11px; font-size: var(--ds-fs-md); }
+  .ds-table { font-size: var(--ds-fs-sm); }
+  .ds-barrow { grid-template-columns: 104px 1fr 76px; }
+  .ds-tv { max-height: 60vh; }
+  .ds-brandrow { gap: 10px; }
+  .ds-brand { height: 34px; }
+  /* The notice stays a ROW on a phone, with the mark at the RIGHT beside the text.
+     Stacking it centres the mark under the notice, where it reads as content rather
+     than as a byline.
+
+     align-items goes to flex-start here, not center: at 360px a notice of any length
+     runs several hundred pixels tall, and centring strands the mark halfway down that
+     wall of text. Top-aligned it sits beside the notice heading, where a mark belongs.
+
+     The mark shrinks and the byline drops to a caption so the row still fits at 360px.
+     Justification is dropped too: justified 10.5px text in a narrow column produces
+     rivers of white space. */
+  .ds-notice { gap: var(--ds-3); align-items: flex-start; padding: 13px 14px; }
+  .ds-noticetext { text-align: left; }
+  .ds-footbrand .ds-brand { height: 34px; }
+  .ds-byline { font-size: 10px; }
+}
+
+@media print {
+  .ds-nav, .ds-cbtns, .ds-filters, .ds-tools { display: none; }
+  .ds-card { break-inside: avoid; box-shadow: none; }
+}

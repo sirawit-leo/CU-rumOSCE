@@ -1,0 +1,42 @@
+# ─────────────────────────────────────────────────────────────
+# repo นี้เผยแพร่เฉพาะ "ตัวเกม" เท่านั้น
+# โน้ตทบทวน รายชื่อยา และไฟล์เคสเป็นเอกสารส่วนตัว ไม่เผยแพร่
+# ─────────────────────────────────────────────────────────────
+
+# รูปถ่ายตู้ยาและตารางยา — เป็นงานของบุคคลอื่นและเป็นข้อมูลภายในของหน่วยงาน
+cowDrugOSCE/
+
+# โน้ตทบทวนและไฟล์เคส — เอกสารส่วนตัว ไม่เผยแพร่
+cases/
+OSCE-00-INDEX.md
+OSCE-01-Drug-Formulary.md
+OSCE-02-Master-Flow.md
+OSCE-03-Minor-Cases.md
+VCA Ruminant Medicine - Review Note.md
+
+# เวอร์ชันเก่าที่ถูกแทนที่แล้ว
+osce-timer.html
+
+# ไฟล์สำรองระหว่างพัฒนา
+*.bak
+*.pre*
+osce-game.html.*
+
+# Obsidian vault settings — ค่าเฉพาะเครื่อง
+.obsidian/
+
+# macOS
+.DS_Store
+._*
+.Spotlight-V100
+.Trashes
+
+# Windows
+Thumbs.db
+Desktop.ini
+
+# Editor
+.vscode/
+.idea/
+*.swp
+*~
