@@ -2241,6 +2241,7 @@ function roll(){
       ?`เมื่อ ${prior.days} วันก่อนผมฉีด ${D(prior.d).n.split(" (")[0]} ให้ไปแล้ว 1 เข็มครับ แต่ไม่ดีขึ้นเลย`
       :"ยังไม่ได้ให้อะไรเลยครับ รอหมอ",
     pres:presK, ramble:presK==="80"||presK==="70", decoyKeys:Object.keys(dec),
+    bagA:[], bagB:[],   // กองคำพร่ำของรอบนี้ · ไม่หยิบซ้ำจนกว่าจะครบกอง
     presTell:((pv&&pv.tell)||"")+(presK==="80"
       ? " · <b>และรอบนี้เจ้าของเล่ายืดยาว</b> — คำตอบจริงยังอยู่ครบทุกคำถาม แต่ต้องคัดออกมาจากเรื่องที่แกพ่วงมาด้วย ซึ่งกินเวลาบนนาฬิกาจริง"
       : presK==="70"
@@ -2327,20 +2328,25 @@ function qAns(id){
   return fill(ramble(raw));
 }
 // พ่วงคำพร่ำหน้า/หลังคำตอบจริง — ไม่แตะเนื้อคำตอบ
+// หยิบจากกองที่สับไว้ ไม่สุ่มใหม่ทุกครั้ง จะได้ไม่พูดท่อนเดิมซ้ำในรอบเดียวกัน
+function take(bag,src){ if(!bag.length)bag.push(...RN.s(src,src.length)); return bag.pop(); }
 function ramble(t){
   if(!V||!V.ramble)return t;
-  const a=RN.c(.5)?RN.p(RAMBLE_A)+" ":"";
+  const a=RN.c(.5)?take(V.bagA,RAMBLE_A)+" ":"";
   // พ่วงท่อนท้ายเฉพาะคำตอบที่ยาวพอจะรับได้ ไม่งั้นคำพร่ำจะยาวกว่าคำตอบเอง
-  const b=(t.replace(/<[^>]+>/g,"").length>=30&&RN.c(.35))?" "+RN.p(RAMBLE_B):"";
+  const b=(t.replace(/<[^>]+>/g,"").length>=30&&RN.c(.35))?" "+take(V.bagB,RAMBLE_B):"";
   return a+t+b;
 }
-function askQ(id,txt){addLog($("qLog"),"owner",txt,qAns(id))}
+// ระหว่างซักประวัติและตรวจร่างกาย ห้ามเน้นคำ — ตัวหนาคือการชี้ว่าตรงไหนสำคัญ
+// ซึ่งเท่ากับเฉลยครึ่งทาง · ข้อมูลดิบยังเก็บตัวหนาไว้ให้หน้าเฉลยใช้
+const noHint=t=>String(t).replace(/<\/?(b|i|strong|em)>/g,"");
+function askQ(id,txt){addLog($("qLog"),"owner",txt,noHint(qAns(id)))}
 function doExam(id,txt){
-  const r=id==="e23"?`คล้องสายวัดรอบอกหลังขาหน้า อ่านสเกลได้ <b>${V.w} กิโลกรัม</b>`
+  const r=id==="e23"?`คล้องสายวัดรอบอกหลังขาหน้า อ่านสเกลได้ ${V.w} กิโลกรัม`
     :fill(V.E[id]||EDEF[id]);
-  addLog($("eLog"),"exam",txt,r);
+  addLog($("eLog"),"exam",txt,noHint(r));
 }
-function doTest(id,txt){addLog($("eLog"),"exam",txt,fill((C.t&&C.t[id])||TDEF[id]))}
+function doTest(id,txt){addLog($("eLog"),"exam",txt,noHint(fill((C.t&&C.t[id])||TDEF[id])))}
 function count(){$("qCount").textContent=asked.size+" คำถาม";
   $("eCount").textContent=(examined.size+tested.size)+" รายการ"}
 

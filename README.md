@@ -101,6 +101,7 @@ still count: whatever you injected, you are expected to know how long its milk m
 ### What the game will not do for you
 
 - It never names the disease.
+- **Nothing is emphasised while you are working.** History answers and examination findings arrive as plain text — bolding the significant phrase would be telling you which one it is. The debrief marks them up afterwards, once the answer is no longer in question.
 - **There is no calculator.** If you want the animal's weight you have to pick up the weight tape during the examination.
 - **The drug list is not filtered.** Lutalyse, xylazine, oestradiol, dexamethasone and gentamicin sit in the same random list as the right answer.
 - **On hard it will not warn you off a drug.** The strength and the label dose are there; that ivermectin must never touch a milking cow is not. You find out when you are marked.
