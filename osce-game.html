@@ -621,6 +621,24 @@ h1,h2,h3{ margin:0; }
   font-weight:650; padding:9px 18px; font-size:var(--ds-fs); }
 .go:hover:not(:disabled){ border-color:var(--ds-text); opacity:.85; }
 .go:disabled{ opacity:.35; cursor:not-allowed; }
+/* แถวควบคุมหน้าแรก — กองเคส ระดับความยาก ปุ่มเริ่ม ต้องเห็นครบโดยไม่ต้องเลื่อน */
+.startgrid{ display:grid; grid-template-columns:auto auto 1fr; gap:var(--ds-4);
+  align-items:end; margin-top:12px; }
+.startgrid .ds-flabel{ margin:0 0 6px; }
+.startgo{ justify-self:end; align-self:end; }
+.startbar .hint{ margin:10px 0 0; }
+.startbar .hint + .hint{ margin-top:4px; }
+@media (max-width:820px){ .startgrid{ grid-template-columns:1fr; }
+  .startgo{ justify-self:stretch; } .startgo .ds-btn{ width:100%; } }
+.peekwrap{ margin-top:var(--ds-4); border:1px solid var(--ds-border);
+  border-radius:var(--ds-r-lg); background:var(--ds-surface); }
+.peekwrap > summary{ cursor:pointer; padding:12px 14px; font-weight:650;
+  font-size:var(--ds-fs-md); list-style:none; }
+.peekwrap > summary::-webkit-details-marker{ display:none; }
+.peekwrap > summary::before{ content:"▸ "; color:var(--ds-muted); }
+.peekwrap[open] > summary::before{ content:"▾ "; }
+.peekwrap > summary:hover{ color:var(--ds-accent); }
+.peekwrap .peek{ border:0; border-radius:0; }
 .btnrow{ display:flex; gap:10px; align-items:center; flex-wrap:wrap; margin-top:18px;
   padding-top:14px; border-top:1px solid var(--ds-border); }
 .btnrow .note{ font-size:var(--ds-fs-sm); color:var(--ds-muted); margin-inline-start:auto; }
@@ -713,79 +731,68 @@ kbd{ font-family:var(--g-mono); font-size:var(--ds-fs-xs); background:var(--ds-c
 
 <!-- ─────────────────────────────────────────────── 0 · briefing -->
 <div class="stage on" id="s0" role="tabpanel" aria-labelledby="r0">
-  <div class="ds-card lede">
-    <div class="ds-chead"><h2 class="ds-ctitle">อ่านก่อนเริ่ม</h2></div>
-    <p class="ds-csub">เกมจะสุ่มเคสให้ 1 เคส แล้ว<b>ไม่บอกว่าเป็นโรคอะไร</b> — คุณต้องซักประวัติเอง เลือกตรวจเอง วินิจฉัยเอง และคำนวณขนาดยาเอง ภายใน 20 นาที</p>
+
+  <div class="ds-card startbar">
+    <p class="ds-csub" style="margin:0">เกมสุ่มเคสให้ 1 เคสจาก 20 โรค <b>ไม่บอกว่าเป็นโรคอะไร</b> — ซักประวัติ ตรวจ วินิจฉัย เลือกยาจากตู้ 38 รายการ และคำนวณขนาดยาเอง ภายใน 20 นาที</p>
+    <div class="startgrid">
+      <div>
+        <p class="ds-flabel">กองเคสที่จะสุ่ม</p>
+        <div class="ds-chips" id="modes">
+          <button class="ds-chip" type="button" data-m="all" aria-pressed="true">ทั้งหมด</button>
+          <button class="ds-chip" type="button" data-m="major" aria-pressed="false">Major เท่านั้น</button>
+          <button class="ds-chip" type="button" data-m="minor" aria-pressed="false">Minor เท่านั้น</button>
+        </div>
+      </div>
+      <div>
+        <p class="ds-flabel">ระดับความยาก</p>
+        <div class="ds-chips" id="diffs">
+          <button class="ds-chip" type="button" data-d="easy" aria-pressed="true">ง่าย — ฝึกหัด</button>
+          <button class="ds-chip" type="button" data-d="hard" aria-pressed="false">ยาก — เหมือนสอบจริง</button>
+        </div>
+      </div>
+      <div class="startgo">
+        <button class="ds-btn go" type="button" id="btnBegin">รับสายเลย →</button>
+      </div>
+    </div>
+    <p class="hint" id="diffNote"></p>
+    <p class="hint" id="poolNote"></p>
   </div>
 
-  <div class="ds-tiles" style="margin-bottom:var(--ds-4)">
-    <div class="ds-tile"><div class="ds-k">กองเคส</div><div class="ds-v ds-num" id="tPool">20</div>
-      <div class="ds-n">major 10 · minor 10</div></div>
-    <div class="ds-tile"><div class="ds-k">ตู้ยา</div><div class="ds-v ds-num" id="tDrug">38</div>
-      <div class="ds-n">เรียงสุ่ม ไม่มีการกรอง</div></div>
-    <div class="ds-tile"><div class="ds-k">เวลา</div><div class="ds-v ds-num">20:00</div>
-      <div class="ds-n">เดินตลอด ย้อนกลับไม่ได้</div></div>
-  </div>
-
-  <div class="cols">
+  <div class="cols" style="margin-top:var(--ds-4)">
     <div class="ds-card">
       <div class="ds-chead"><h3 class="ds-ctitle">กติกา</h3></div>
       <ul class="rules">
-        <li><b>เวลาคือทรัพยากร</b> — ซักประวัติข้อละ 10 วิ · ตรวจอย่างละ 20 วิ · <b>ฟังรูเมน 3 นาทีเต็ม</b> · ให้ยาตัวละ 45 วิ</li>
+        <li><b>เวลาคือทรัพยากร</b> — ถาม 10 วิ · ตรวจ 20 วิ · <b>ยกกีบ 4 นาที</b> · <b>ฟังรูเมน 3 นาที</b> · ให้ยาตัวละ 45 วิ</li>
         <li><b>กดทุกปุ่มไม่ได้ช่วย</b> — มีคะแนนความแม่นยำ ทำเยอะแต่ได้ผลน้อยโดนหัก</li>
-        <li><b>ย้อนกลับไม่ได้</b> — ตัดสินใจแล้วเดินหน้าอย่างเดียว</li>
+        <li><b>ไม่มีเครื่องคิดเลข</b> — เลือกยาได้สูงสุด 3 ตัวจากตู้ 38 รายการ แล้วคูณหารเอง</li>
         <li><b>ไม่หยิบสายวัดรอบอก = เสียเวลา 2 นาที</b> เพราะต้องเดินกลับไปวัดก่อนคำนวณยา</li>
-        <li><b>เลือกยาได้สูงสุด 3 ตัว</b> จากตู้ทั้ง 38 รายการ — ยาหลัก ยาเสริม ยาทาแผล</li>
-        <li><b>ไม่มีเครื่องคิดเลข</b> — คูณหารเอง</li>
         <li>สัตว์อยู่ในฟาร์มโคนมเสมอ แต่อาจเป็น<b>โครีดนม โคพักรีด หรือโคสาว</b></li>
       </ul>
     </div>
-
     <div class="ds-card">
       <div class="ds-chead"><h3 class="ds-ctitle">คะแนนเต็ม 100</h3></div>
-      <p class="ds-csub">สี่อย่างที่ตัดสินว่าวัวรอดหรือไม่ คิดเป็น <b>60 คะแนน</b></p>
       <div class="tblwrap">
         <table class="ds-table">
-          <thead><tr><th class="ds-r">ด่าน</th><th>สิ่งที่ให้คะแนน</th><th class="ds-r">คะแนน</th></tr></thead>
           <tbody>
-            <tr class="corerow"><td class="n">2</td><td><b>ตัดสิน TRIAGE</b></td><td class="n"><b>12</b></td></tr>
-            <tr class="corerow"><td class="n">2</td><td><b>สั่งเจ้าของเตรียม</b></td><td class="n"><b>12</b></td></tr>
-            <tr class="corerow"><td class="n">4</td><td><b>วินิจฉัยโรค</b></td><td class="n"><b>12</b></td></tr>
-            <tr class="corerow"><td class="n">5</td><td><b>เลือกยาถูกตัว</b></td><td class="n"><b>10</b></td></tr>
-            <tr class="sumrow"><td class="n"></td><td>รวมสี่อย่างหลัก</td><td class="n">46</td></tr>
-            <tr><td class="n">🛑</td><td colspan="2"><b>วินิจฉัยผิด = เลือกยา ขนาดยา และการคำนวณ เป็นศูนย์ทั้งหมด</b> (รวม 20 คะแนน) — ให้ยาถูกทั้งที่วินิจฉัยผิดคือการเดา ไม่ใช่ความสามารถ</td></tr>
-            <tr><td class="n">1</td><td>ซักประวัติได้ข้อที่ชี้โรค</td><td class="n">7</td></tr>
-            <tr><td class="n">3</td><td>ตรวจร่างกาย + ตรวจเพิ่มหน้างาน</td><td class="n">12</td></tr>
-            <tr class="corerow"><td class="n">—</td><td><b>ความแม่นยำของสิ่งที่ทำทั้งหมด</b></td><td class="n"><b>13</b></td></tr>
-            <tr><td class="n">5</td><td>ขนาดยา · คำนวณ mL · ทางที่ให้</td><td class="n">12</td></tr>
-            <tr><td class="n">6</td><td>ระยะหยุดนม <b>4</b> · วันและรอบที่ส่งขายได้ <b>4</b> · แจ้งกรม 1 · พยากรณ์ 1</td><td class="n">10</td></tr>
+            <tr class="corerow"><td><b>ตัดสินใจหน้างาน</b> — TRIAGE · สั่งเจ้าของ</td><td class="n"><b>24</b></td></tr>
+            <tr class="corerow"><td><b>รักษา</b> — เลือกยา · ขนาดยา · คำนวณ · ทางให้ยา</td><td class="n"><b>22</b></td></tr>
+            <tr><td>เก็บข้อมูล — ซักประวัติ · ตรวจร่างกาย · ตรวจเพิ่ม</td><td class="n">19</td></tr>
+            <tr class="corerow"><td><b>ความแม่นยำ</b> — ทำเยอะแต่ได้ผลน้อยโดนหัก</td><td class="n"><b>13</b></td></tr>
+            <tr class="corerow"><td><b>วินิจฉัยโรค</b></td><td class="n"><b>12</b></td></tr>
+            <tr><td>คุยกับเจ้าของ — หยุดนม · วันส่งนม · แจ้งกรม · พยากรณ์</td><td class="n">10</td></tr>
+            <tr><td>🛑 <b>วินิจฉัยผิด → 20 ใน 22 ของกลุ่มรักษาเป็นศูนย์</b> ให้ยาถูกทั้งที่วินิจฉัยผิดคือการเดา</td><td class="n">—</td></tr>
           </tbody>
         </table>
       </div>
-      <div class="hist" id="hist"></div>
     </div>
   </div>
 
-  <p class="ds-flabel" style="margin:22px 0 8px">เลือกกองเคสที่จะสุ่ม</p>
-  <div class="ds-chips" id="modes">
-    <button class="ds-chip" type="button" data-m="all" aria-pressed="true">ทั้งหมด</button>
-    <button class="ds-chip" type="button" data-m="major" aria-pressed="false">Major เท่านั้น</button>
-    <button class="ds-chip" type="button" data-m="minor" aria-pressed="false">Minor เท่านั้น</button>
-  </div>
-  <p class="hint" style="margin-top:10px">กดเลือกกอง แล้วรายชื่อโรคในกองนั้นจะแสดงด้านล่าง</p>
-  <div class="peek" id="peek"></div>
+  <details class="peekwrap">
+    <summary id="peekSum">ดูรายชื่อโรคในกองที่เลือก</summary>
+    <div class="peek open" id="peek"></div>
+  </details>
 
-  <p class="ds-flabel" style="margin:22px 0 8px">ระดับความยาก</p>
-  <div class="ds-chips" id="diffs">
-    <button class="ds-chip" type="button" data-d="easy" aria-pressed="true">ง่าย — ฝึกหัด</button>
-    <button class="ds-chip" type="button" data-d="hard" aria-pressed="false">ยาก — เหมือนสอบจริง</button>
-  </div>
-  <p class="hint" id="diffNote" style="margin-top:10px"></p>
-
-  <div class="btnrow">
-    <button class="ds-btn go" type="button" id="btnBegin">รับสายเลย →</button>
-    <span class="note" id="poolNote"></span>
-  </div>
+  <div class="hist" id="hist"></div>
 </div>
 
 <!-- ─────────────────────────────────────────────── 1 · the phone call -->
@@ -1117,7 +1124,7 @@ const ES=[["e1","ยืนดูห่าง ๆ — ระดับความ
  ["e13","ตรวจหัว ตา จมูก ปาก และดมลมหายใจ",20],["e14","คลำผิวหนังทั่วตัว",20],["e15","ฟังปอด",20],
  ["e16","ฟังการบีบตัวรูเมนที่สวาปซ้าย นับ 2 นาที",180],["e17","เคาะและฟังหาเสียง ping",20],
  ["e18","ตรวจอุจจาระ",20],["e19","คลำเต้านม 4 เต้า + strip cup",20],
- ["e20","ยกกีบตรวจครบ 4 ขา + ดมกลิ่น",20],["e21","คลำกล้ามเนื้อมัดใหญ่หา crepitus",20],
+ ["e20","ยกกีบตรวจครบ 4 ขา + ดมกลิ่น",240],["e21","คลำกล้ามเนื้อมัดใหญ่หา crepitus",20],
  ["e22","ดูสีปัสสาวะ",20],["e25","Withers pinch test",20],["e24","ตรวจระบบประสาทเบื้องต้น",20]];
 const EDEF={e1:"ยืนได้ ตื่นตัวดี (BAR)",e2:"หายใจสม่ำเสมอ ไม่ลำบาก",e3:"ท้องสมมาตร ไม่ป่อง",
  e4:"BCS 3/5",e5:"เดินปกติ ลงน้ำหนักทั้ง 4 ขาเท่ากัน",e6:"คอกชื้นตามฤดู แต่ไม่มีน้ำขัง",
@@ -2169,7 +2176,8 @@ function boot(){
   };
   dfs.forEach(b=>{b.onclick=()=>{if(!b.dataset.d)return;DIFF=b.dataset.d;paintDiff()}});
   paintDiff();
-  const showPeek=()=>{$("peek").innerHTML=peekTable(MODE);$("peek").classList.add("open")};
+  const showPeek=()=>{$("peek").innerHTML=peekTable(MODE);
+    $("peekSum").textContent=`ดูรายชื่อโรคในกองที่เลือก (${pool().length} โรค)`};
   ms.forEach(b=>{
     b.onclick=()=>{MODE=b.dataset.m;
       ms.forEach(x=>x.setAttribute("aria-pressed",x===b?"true":"false"));

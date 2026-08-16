@@ -48,6 +48,7 @@ open osce-game.html      # macOS   ·   Windows: start   ·   Linux: xdg-open
 |---|---|
 | One history question | 10 s |
 | One physical examination | 20 s |
+| **Lifting and examining all four feet** | **4 min** |
 | **Auscultating the rumen at the left paralumbar fossa** | **3 min** |
 | Blood smear from the ear tip | 2 min 30 s |
 | Each drug drawn up and injected | 45 s |
